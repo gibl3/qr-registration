@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded");
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Poppins";
+}
+
+.md-icon-18 {
+    font-size: 18px;
+}
+.md-icon-24 {
+    font-size: 24px;
+}
+.md-icon-36 {
+    font-size: 36px;
+}
+.md-icon-48 {
+    font-size: 48px;
+}
+
+.qr-scan-icon {
+    @apply text-[156px];
+}
+
+@utility input-base {
+    @apply border  w-full py-2.5 px-4 text-sm border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500;
+}
+
+@utility btn-base {
+    @apply flex items-center justify-center gap-x-2 py-2.5 px-6 text-sm size-fit md:text-base text-center font-medium leading-normal rounded-full transition-all duration-150 ease-in-out border-none cursor-pointer disabled:pointer-events-none whitespace-nowrap;
+}
+
+@utility btn-filled {
+    @apply btn-base bg-emerald-500 text-white hover:bg-emerald-600/90 hover:shadow-md disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-filled-tonal {
+    @apply btn-base bg-emerald-200/50 text-emerald-900/70 hover:bg-emerald-200/90 hover:text-emerald-600/90 hover:shadow-md disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-filled-warning {
+    @apply btn-base bg-red-500 text-white hover:bg-red-600/90 hover:shadow-md disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-filled-tonal-warning {
+    @apply btn-base bg-red-200/50 text-red-700/70 hover:bg-red-200/90 hover:shadow-md disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-filled-tonal-success {
+    @apply btn-base bg-green-200/50 text-green-900/50 hover:bg-green-200/90 hover:shadow-md disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-outline {
+    @apply btn-base pl-4 pr-6 bg-transparent text-emerald-500 outline outline-neutral-500 hover:shadow-md disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-text {
+    @apply btn-base bg-transparent text-emerald-700/70 hover:bg-emerald-200/50 hover:shadow-md hover:text-emerald-600/90 disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-text-success {
+    @apply btn-base bg-transparent text-green-700/70 hover:bg-green-200/50 hover:shadow-md hover:text-green-600/90 disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
+
+@utility btn-link {
+    @apply btn-base p-0 bg-transparent text-emerald-600 hover:text-emerald-500 disabled:bg-neutral-500/10 disabled:text-neutral-900/30 disabled:hover:shadow-none;
+}
