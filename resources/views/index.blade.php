@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <a href="{{ route('login') }}" class="btn-filled">Login</a>
+                <a href="{{ route('login') }}" class="btn-filled">Log in</a>
             </div>
         </div>
     </nav>
