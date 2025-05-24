@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade'); // Foreign key to students table
-            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('subject_id')->constrained()->onDelete('cascade');
             $table->string('first_name')->nullable(); // Add first_name column
             $table->string('last_name')->nullable();  // Add last_name column
             $table->date('date'); // Date of attendance
