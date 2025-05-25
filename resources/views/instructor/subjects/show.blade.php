@@ -20,7 +20,7 @@
     <div class="flex items-center justify-between">
         <div class="">
             <p class="text-gray-600">{{ $subject->subject_name }}</p>
-            <h1 class="text-2xl font-bold text-gray-800">Enrolled Students</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Registered Students</h1>
         </div>
 
         <div class="flex gap-x-2">
@@ -93,7 +93,7 @@
     <div class="mt-8">
         <div class="flex items-center justify-between">
             <div class="">
-                <p class="text-gray-600">{{ $subject->subject_name }}</p>
+                {{-- <p class="text-gray-600">{{ $subject->subject_name }}</p> --}}
 
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Currently Enrolled Students</h2>
             </div>
