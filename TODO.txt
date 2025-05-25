@@ -1,0 +1,14 @@
+Easy Priority:
+1. Add subject name in displaying the success results after scanning.
+2. Add filter by subject in instructor/attendance/index.blade.php
+3. Addition of section (A-E) of students.
+
+Hard Priority:
+1. Integrate phone scanner
+2.1. Add program, year, and section to the create subject
+2.2. Automatically enroll students with the same program, year, and section as 
+    the newly created subject
+
+
+Not Priority:
+1. Be able to scan more than one qr in one go
