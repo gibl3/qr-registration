@@ -23,7 +23,10 @@ class SubjectController extends Controller
             $data = $request->validate([
                 'subject_code' => 'required|string|max:255',
                 'subject_name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000'
+                'description' => 'nullable|string|max:1000',
+                'program' => 'required|string|max:255',
+                'year_level' => 'required|integer|min:1|max:4',
+                'section' => 'required|in:A,B,C,D,E'
             ]);
             $data['instructor_id'] = auth()->id();
 

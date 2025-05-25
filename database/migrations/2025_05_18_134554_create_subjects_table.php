@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('subject_code')->unique();
             $table->string('subject_name');
+            $table->string('program');
+            $table->integer('year_level');
+            $table->enum('section', ['A', 'B', 'C', 'D', 'E'])->default('A');
             $table->text('description')->nullable();
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
