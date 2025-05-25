@@ -20,6 +20,13 @@
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Attendance Records</h1>
         <div class="flex items-center space-x-4">
+            <!-- Subject Filter -->
+            <select id="subject-filter" class="rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3">
+                <option value="">All Subjects</option>
+                @foreach ($subjects as $subject)
+                    <option value="{{ $subject->id }}">{{ $subject->subject_code }}</option>
+                @endforeach
+            </select>
             <!-- Date Filter -->
             <div class="flex items-center justify-center space-x-4">
                 <input type="date" id="date-filter" class="rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3" value="{{ date('Y-m-d') }}">
@@ -61,7 +68,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="attendance-table-body">
                     @foreach ($attendances as $attendance)
-                    <tr class="hover:bg-gray-50" data-date="{{ $attendance->date }}">
+                    <tr class="hover:bg-gray-50" data-date="{{ $attendance->date }}" data-subject="{{ $attendance->subject->id ?? '' }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">
                                 {{ $attendance->student->student_id }}
@@ -82,22 +89,20 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ $attendance->subject->subject_name ?? 'N/A' }}
+                            <div class="text-sm text-gray-500">{{ $attendance->subject->subject_name ?? 'N/A' }}</div>
                         </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-        </td>
-        </tr>
-        @endforeach
-        </tbody>
-        </table>
     </div>
-</div>
 
-<!-- No Records Message -->
-<div id="no-records" class="hidden text-center py-12">
-    <span class="material-symbols-rounded text-gray-400 text-5xl">event_busy</span>
-    <p class="mt-4 text-gray-500">No attendance records found for this date</p>
-</div>
+    <!-- No Records Message -->
+    <div id="no-records" class="hidden text-center py-12">
+        <span class="material-symbols-rounded text-gray-400 text-5xl">event_busy</span>
+        <p class="mt-4 text-gray-500">No attendance records found for this date</p>
+    </div>
 </div>
 @endsection
 
@@ -112,6 +117,7 @@
         const currentDate = document.getElementById('current-date');
         const tableBody = document.getElementById('attendance-table-body');
         const noRecords = document.getElementById('no-records');
+        const subjectFilter = document.getElementById('subject-filter');
         const rows = tableBody.getElementsByTagName('tr');
 
         function toLocalDateString(date) {
@@ -128,13 +134,17 @@
             });
         }
 
-        function filterByDate(date) {
+        function filterBySubjectAndDate(subjectId, date) {
             const formattedDate = toLocalDateString(date);
             let hasRecords = false;
 
             Array.from(rows).forEach(row => {
                 const rowDate = row.getAttribute('data-date');
-                if (rowDate === formattedDate) {
+                const rowSubject = row.getAttribute('data-subject');
+                const dateMatch = rowDate === formattedDate;
+                const subjectMatch = !subjectId || rowSubject === subjectId;
+
+                if (dateMatch && subjectMatch) {
                     row.style.display = '';
                     hasRecords = true;
                 } else {
@@ -151,12 +161,17 @@
             dateFilter.value = formattedDate;
         }
 
-        // Initial filter for today
-        filterByDate(new Date());
+        // Initial filter for today and all subjects
+        filterBySubjectAndDate(subjectFilter.value, new Date());
 
         // Date filter change
         dateFilter.addEventListener('change', function() {
-            filterByDate(new Date(this.value));
+            filterBySubjectAndDate(subjectFilter.value, new Date(this.value));
+        });
+
+        // Subject filter change
+        subjectFilter.addEventListener('change', function() {
+            filterBySubjectAndDate(this.value, new Date(dateFilter.value));
         });
 
         // Clear date filter
@@ -170,16 +185,16 @@
 
         // Previous day
         prevDate.addEventListener('click', function() {
-            const currentDate = new Date(dateFilter.value || new Date());
-            currentDate.setDate(currentDate.getDate() - 1);
-            filterByDate(currentDate);
+            const current = new Date(dateFilter.value || new Date());
+            current.setDate(current.getDate() - 1);
+            filterBySubjectAndDate(subjectFilter.value, current);
         });
 
         // Next day
         nextDate.addEventListener('click', function() {
-            const currentDate = new Date(dateFilter.value || new Date());
-            currentDate.setDate(currentDate.getDate() + 1);
-            filterByDate(currentDate);
+            const current = new Date(dateFilter.value || new Date());
+            current.setDate(current.getDate() + 1);
+            filterBySubjectAndDate(subjectFilter.value, current);
         });
     });
 </script>

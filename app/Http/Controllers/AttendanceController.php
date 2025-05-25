@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Subject;
 
 class AttendanceController extends Controller
 {
@@ -13,8 +14,13 @@ class AttendanceController extends Controller
             ->whereHas('subject', function ($query) {
                 $query->where('instructor_id', auth()->id());
             })->get();
+        
+        $subjects = Subject::where('instructor_id', auth()->id())->get();
+        if ($attendances->isEmpty()) {
+            return view('instructor.attendance.index', compact('subjects'));
+        }
 
-        return view('instructor.attendance.index', compact('attendances'));
+        return view('instructor.attendance.index', compact('attendances', 'subjects'));
     }
 
     public function edit(Attendance $attendance)
