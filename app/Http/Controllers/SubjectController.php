@@ -18,6 +18,7 @@ class SubjectController extends Controller
 
     public function store(Request $request)
     {
+        $subject = null;
         try {
             $data = $request->validate([
                 'subject_code' => 'required|string|max:255',
@@ -27,11 +28,6 @@ class SubjectController extends Controller
             $data['instructor_id'] = auth()->id();
 
             $subject = Subject::create($data);
-
-            return response()->json([
-                'message' => 'Subject added successfully.',
-                'subject' => $subject
-            ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'errors' => $e->errors()
@@ -42,6 +38,20 @@ class SubjectController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+
+        if ($subject) {
+            $this->automaticEnrollStudents($subject);
+        }
+
+        return response()->json([
+            'message' => 'Subject added successfully.',
+            'subject' => $subject
+        ], 200);
+    }
+
+    private function automaticEnrollStudents(Subject $subject)
+    {
+        
     }
 
     public function update(Request $request, Subject $subject)

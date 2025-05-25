@@ -53,6 +53,25 @@
                     <input type="text" name="subject_name" id="subject_name" required class="input-base">
                 </div>
                 <div class="space-y-2">
+                    <label for="program" class="block text-sm font-sm text-neutral-700">Program</label>
+                    <select id="program" name="program" class="input-base border-r-[12px] border-transparent">
+                        <option value="BSIT">Bachelor of Science in Information Technology</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label for="year" class="block text-sm font-sm text-neutral-700">Year</label>
+                    <select id="year_level" name="year_level" class="input-base border-r-[12px] border-transparent">
+                        <option value="1">1st year</option>
+                        <option value="2">2nd year</option>
+                        <option value="3">3rd year</option>
+                        <option value="4">4th year</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label for="section_input" class="block text-sm font-sm text-neutral-700">Section</label>
+                    <input type="text" name="section" id="section_input" required class="input-base" placeholder="Enter section (A-E)">
+                </div>
+                <div class="space-y-2">
                     <label for="description" class="block text-sm font-sm text-neutral-700">Description</label>
                     <textarea name="description" id="description" rows="3" class="input-base"></textarea>
                 </div>
