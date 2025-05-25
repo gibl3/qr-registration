@@ -2,11 +2,13 @@ Easy Priority:
 DONE. Add subject name in displaying the success results after scanning.
 DONE. Add filter by subject in instructor/attendance/index.blade.php
 DONE. Addition of section (A-E) of students.
+DONE. Input validation of section
+4. Edit functionalities of new fields of students and subjects
 
 Hard Priority:
 1. Integrate phone scanner
-2.1. Add program, year, and section to the create subject
-2.2. Automatically enroll students with the same program, year, and section as 
+DONE. Add program, year, and section to the create subject
+DONE. Automatically enroll students with the same program, year, and section as 
     the newly created subject
 
 

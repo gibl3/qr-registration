@@ -200,14 +200,42 @@
         }
     }
 
+    function displayValidationErrors(errors) {
+        console.log(errors)
+        if (errors) {
+            // Display validation errors
+            for (const [field, messages] of Object.entries(errors)) {
+                const input = document.querySelector(`[name="${field}"]`);
+                if (input) {
+                    const errorDiv = document.createElement("p");
+                    errorDiv.classList.add(
+                        "text-red-500",
+                        "text-sm",
+                        "error-message"
+                    );
+                    errorDiv.textContent = messages[0]; // Display the first error message
+                    input.parentElement.appendChild(errorDiv);
+
+                    errorTimeout = setTimeout(() => {
+                        errorDiv.classList.add("hidden");
+                    }, 3000);
+                }
+            }
+        } else {
+            // Handle other errors
+            alert("An error occurred while registering the student.");
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Add form submission handler
-        document.getElementById('subject-form').addEventListener('submit', function(e) {
+        document.getElementById('subject-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const form = this;
             const formData = new FormData(form);
 
-            fetch(form.action, {
+            try {
+                const response = await fetch(form.action, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -218,20 +246,26 @@
                         "X-Requested-With": "XMLHttpRequest"
                     },
                     credentials: "same-origin"
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        const successMessage = document.getElementById('success-message');
-                        successMessage.querySelector('span').textContent = data.message;
-                        successMessage.classList.remove('hidden');
-
-                        window.location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
                 });
+
+                if (!response.ok) {
+                    if (response.status === 422) {
+                        const data = await response.json();
+                        throw data.errors; // Throw validation errors
+                    } else {
+                        throw new Error("Failed to register student.");
+                    }
+                } else {
+                    const data = await response.json();
+                    const successMessage = document.getElementById('success-message');
+                    successMessage.querySelector('span').textContent = data.message;
+                    successMessage.classList.remove('hidden');
+
+                    window.location.reload();
+                }
+            } catch (errors) {
+                displayValidationErrors(errors);
+            }
         });
 
         // Delete subject

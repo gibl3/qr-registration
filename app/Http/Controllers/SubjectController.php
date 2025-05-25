@@ -54,7 +54,16 @@ class SubjectController extends Controller
 
     private function automaticEnrollStudents(Subject $subject)
     {
-        
+        // Find students matching the subject's program, year_level, and section
+        $students = Student::where('program', $subject->program)
+            ->where('year_level', $subject->year_level)
+            ->where('section', $subject->section)
+            ->get();
+
+        // Attach each student to the subject (assuming many-to-many relationship)
+        foreach ($students as $student) {
+            $student->subjects()->syncWithoutDetaching([$subject->id]);
+        }
     }
 
     public function update(Request $request, Subject $subject)
