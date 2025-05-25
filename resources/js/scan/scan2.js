@@ -62,11 +62,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (response.status === 201) {
                     // Attendance recorded successfully
+                    const attendance = data.attendance;
                     lastScannedCode = c;
                     updateResult(data.message, "success");
-                    const attendance = data.attendance;
                     const detailsList = `
                     <ul class="list-disc pl-5">
+                        <li><strong>Subject:</strong> ${attendance.subject_code}</li>
                         <li><strong>First Name:</strong> ${attendance.first_name}</li>
                         <li><strong>Last Name:</strong> ${attendance.last_name}</li>
                         <li><strong>Date:</strong> ${attendance.date}</li>
@@ -177,9 +178,12 @@ document.addEventListener("DOMContentLoaded", function () {
         isScanning = false;
         toggleBtnIcon.textContent = "videocam";
         document.getElementById("scan-text").textContent = "Start Scanning";
-        resultContainer.classList.add("hidden");
-        attendeeDetails.innerHTML = "";
-        messageContainer.innerHTML = "";
+        
+        // if (resultIcon.textContent === "check_circle") {
+        //     attendeeDetails.innerHTML = "";
+        //     messageContainer.innerHTML = "";
+        //     resultContainer.classList.add("hidden");
+        // }
         lastScannedCode = null;
     }
 
