@@ -126,12 +126,12 @@
                 <span class="material-symbols-rounded text-neutral-600 md-icon-48">newsstand</span>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No subjects</h3>
                 <p class="mt-1 text-sm text-gray-500">Get started by creating a new subject.</p>
-                <div class="mt-6">
+                {{-- <div class="mt-6">
                     <button onclick="openModal()"
                         class="btn-filled mx-auto">
                         Add new subject
                     </button>
-                </div>
+                </div> --}}
             </div>
         </div>
         @endforelse
