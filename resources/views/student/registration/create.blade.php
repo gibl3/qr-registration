@@ -33,6 +33,18 @@
                 @csrf
                 @method('post')
 
+                <!-- Student ID -->
+                <div class="space-y-2">
+                    <label for="student_id" class="font-medium text-neutral-700">Student ID</label>
+                    <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" class="input-base">
+                </div>
+
+                <!-- Email Address -->
+                <div class="space-y-2">
+                    <label for="email_address" class="font-medium text-neutral-700">Email Address</label>
+                    <input type="email" id="email_address" name="email_address" placeholder="Enter email address" class="input-base">
+                </div>
+
                 <!-- First Name -->
                 <div class="space-y-2">
                     <label for="first_name" class="font-medium text-neutral-700">First Name</label>
@@ -68,6 +80,11 @@
                     </div>
                 </div>
 
+                <div class="space-y-2">
+                    <label for="section_input" class="font-medium text-neutral-700">Section</label>
+                    <input type="text" id="section_input" name="section" placeholder="Enter Section (A-E)" class="input-base">
+                </div>
+
                 <!-- Gender -->
                 <div class="space-y-2">
                     <label for="gender" class="font-medium text-neutral-700">Gender</label>
@@ -77,18 +94,6 @@
                             <option value="female">Female</option>
                         </select>
                     </div>
-                </div>
-
-                <!-- Student ID -->
-                <div class="space-y-2">
-                    <label for="student_id" class="font-medium text-neutral-700">Student ID</label>
-                    <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" class="input-base">
-                </div>
-
-                <!-- Email Address -->
-                <div class="space-y-2">
-                    <label for="email_address" class="font-medium text-neutral-700">Email Address</label>
-                    <input type="email" id="email_address" name="email_address" placeholder="Enter email address" class="input-base">
                 </div>
 
                 <input type="submit" value="Register Student" class="w-full btn-filled" />

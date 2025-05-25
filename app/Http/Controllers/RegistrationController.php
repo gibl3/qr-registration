@@ -30,6 +30,7 @@ class RegistrationController extends Controller
                 'last_name' => 'required|string|max:255',
                 'program' => 'required|in:BSIT',
                 'year_level' => 'required|integer|min:1|max:4',
+                'section' => 'required|in:A,B,C,D,E',
                 'gender' => 'required|in:male,female',
                 'student_id' => 'required|string|max:20|unique:students,student_id',
                 'email_address' => 'required|email|max:255|unique:students,email_address',

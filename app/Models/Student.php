@@ -14,6 +14,7 @@ class Student extends Model
         'last_name',
         'program',
         'year_level',
+        'section',
         'gender',
         'student_id',
         'email_address',

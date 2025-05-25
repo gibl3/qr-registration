@@ -1,7 +1,7 @@
 Easy Priority:
 DONE. Add subject name in displaying the success results after scanning.
 DONE. Add filter by subject in instructor/attendance/index.blade.php
-3. Addition of section (A-E) of students.
+DONE. Addition of section (A-E) of students.
 
 Hard Priority:
 1. Integrate phone scanner

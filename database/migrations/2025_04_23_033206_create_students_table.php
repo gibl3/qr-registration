@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('program');
             $table->integer('year_level');
+            $table->enum('section', ['A', 'B', 'C', 'D', 'E'])->default('A');
             $table->string('student_id');
             $table->string('email_address')->unique();
             $table->timestamps();
