@@ -16,9 +16,9 @@ class AttendanceController extends Controller
             })->get();
         
         $subjects = Subject::where('instructor_id', auth()->id())->get();
-        if ($attendances->isEmpty()) {
-            return view('instructor.attendance.index', compact('subjects'));
-        }
+        // if ($attendances->isEmpty()) {
+        //     return view('instructor.attendance.index', compact('subjects'));
+        // }
 
         return view('instructor.attendance.index', compact('attendances', 'subjects'));
     }
