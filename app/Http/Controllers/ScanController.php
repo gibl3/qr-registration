@@ -42,8 +42,9 @@ class ScanController extends Controller
                 ->first();
 
             if ($attendance) {
+                $subjectCode = $attendance->subject->subject_code ?? '';
                 return response()->json([
-                    'message' => 'Attendance already recorded for this subject today.',
+                    'message' => "Attendance already recorded for the subject $subjectCode today.",
                     'student' => $student->only(['first_name', 'last_name', 'program', 'year_level']),
                 ], 409);
             }
@@ -60,7 +61,14 @@ class ScanController extends Controller
 
             return response()->json([
                 'message' => 'Attendance recorded successfully.',
-                'attendance' => $attendance->only(['first_name', 'last_name', 'date', 'time_in', 'status']),
+                'attendance' => [
+                    'first_name' => $attendance->first_name,
+                    'last_name' => $attendance->last_name,
+                    'date' => $attendance->date,
+                    'time_in' => $attendance->time_in,
+                    'status' => $attendance->status,
+                    'subject_code' => $attendance->subject->subject_code,
+                ],
             ], 201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
