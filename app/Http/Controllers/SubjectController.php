@@ -13,7 +13,8 @@ class SubjectController extends Controller
     public function index()
     {
         $subjects = Subject::where('instructor_id', auth()->id())->get();
-        return view('instructor.subjects.index', ['subjects' => $subjects]);
+        $instructor = Instructor::find(auth()->id());
+        return view('instructor.subjects.index', ['subjects' => $subjects, 'instructor' => $instructor]);
     }
 
     public function store(Request $request)
