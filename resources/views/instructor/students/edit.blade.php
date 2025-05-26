@@ -28,9 +28,28 @@
         </div>
         @endif
 
+        {{-- Past action: {{ route('instructor.students.update', ['student' => $student]) }} --}}
         <form method="post" action="{{ route('instructor.students.update', ['student' => $student]) }}" class="space-y-4">
             @csrf
             @method('put')
+
+            <!-- Student ID -->
+            <div class="space-y-2">
+                <label for="student_id" class="font-medium">Student ID</label>
+                <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" class="input-base" value="{{ $student->student_id }}">
+                @error('student_id')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Email Address -->
+            <div class="space-y-2">
+                <label for="email_address" class="font-medium">Email Address</label>
+                <input type="email" id="email_address" name="email_address" placeholder="Enter email address" class="input-base" value="{{ $student->email_address }}">
+                @error('email_address')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
 
             <!-- First Name -->
             <div class="space-y-2">
@@ -80,20 +99,24 @@
                 @enderror
             </div>
 
-            <!-- Student ID -->
             <div class="space-y-2">
-                <label for="student_id" class="font-medium">Student ID</label>
-                <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" class="input-base" value="{{ $student->student_id }}">
-                @error('student_id')
+                <label for="section_input" class="font-medium">Section</label>
+                <input type="text" id="section_input" name="section" placeholder="Enter section (A_E)" class="input-base" value="{{ $student->section }}">
+                @error('section')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Email Address -->
-            <div class="space-y-2">
-                <label for="email_address" class="font-medium">Email Address</label>
-                <input type="email" id="email_address" name="email_address" placeholder="Enter email address" class="input-base" value="{{ $student->email_address }}">
-                @error('email_address')
+            <!-- Gender -->
+            <div class="space-y-2 hidden">
+                <label for="gender" class="font-medium">Gender</label>
+                <div class="input-base p-0">
+                    <select id="gender" name="gender" class="input-base border-r-[12px] border-transparent">
+                        <option value="male" {{ $student->gender === 'male' ? 'selected' : '' }}>Male</option>
+                        <option value="female" {{ $student->gender === 'female' ? 'selected' : '' }}>Female</option>
+                    </select>
+                </div>
+                @error('gender')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
