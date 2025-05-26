@@ -3,7 +3,8 @@ DONE. Add subject name in displaying the success results after scanning.
 DONE. Add filter by subject in instructor/attendance/index.blade.php
 DONE. Addition of section (A-E) of students.
 DONE. Input validation of section
-4. Edit functionalities of new fields of studen ts and subjects
+DONE. Edit functionalities of new fields of studen ts and subjects
+DONE. Update the students enrolled once program, year_level, or section changes in the subject
 
 Hard Priority:
 1. Integrate phone scanner
@@ -11,6 +12,7 @@ DONE. Add program, year, and section to the create subject
 DONE. Automatically enroll students with the same program, year, and section as 
     the newly created subject
 4. REFACTOR: add departments and programs table
+5. REFACTOR: add subjects table and subjects_advised table
 
 
 Not Priority:

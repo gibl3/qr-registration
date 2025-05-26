@@ -75,6 +75,8 @@
                     <label for="description" class="block text-sm font-sm text-neutral-700">Description</label>
                     <textarea name="description" id="description" rows="3" class="input-base"></textarea>
                 </div>
+                <p id="edit-subject-warning" class="block text-xs font-sm text-neutral-700 italic hidden">
+                    Changing the program, year, or section will update the students enrolled.</p>
 
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeModal()"
@@ -108,7 +110,10 @@
         '{{ $subject->id }}',
         '{{ addslashes($subject->subject_code) }}',
         '{{ addslashes($subject->subject_name) }}',
-        '{{ addslashes($subject->description) }}'
+        '{{ addslashes($subject->description) }}',
+        '{{ addslashes($subject->program) }}',
+        '{{ $subject->year_level }}',
+        '{{ addslashes($subject->section) }}'
     )">
                         <span class="material-symbols-rounded text-neutral-600">edit</span>
                     </button>
@@ -174,16 +179,22 @@
         document.getElementById('modal-submit-btn').textContent = 'Create subject';
         document.getElementById('subject-form').action = "{{ route('instructor.subjects.store') }}";
         document.querySelector('#subject-form input[name=_method]')?.remove();
+        document.getElementById('edit-subject-warning').classList.add('hidden');
     }
 
-    function editSubject(id, code, name, description) {
+    function editSubject(id, code, name, description, program, year, section) {
         openModal();
+        document.getElementById('edit-subject-warning').classList.remove('hidden');
+
         document.getElementById('modal-title').textContent = `Edit ${name}`;
         document.getElementById('modal-submit-btn').textContent = 'Update subject';
 
         document.getElementById('subject_code').value = code;
         document.getElementById('subject_name').value = name;
         document.getElementById('description').value = description;
+        document.getElementById('program').value = program;
+        document.getElementById('year_level').value = year;
+        document.getElementById('section_input').value = section;
 
         // Set form action to update route
         const form = document.getElementById('subject-form');

@@ -67,16 +67,37 @@ class SubjectController extends Controller
         }
     }
 
+    private function reenrollStudents(Subject $subject)
+    {
+        // delete existing enrollments for this subject
+        DB::table('subject_student')
+            ->where('subject_id', $subject->id)
+            ->delete();
+        
+        $this->automaticEnrollStudents($subject);
+    }
+
     public function update(Request $request, Subject $subject)
     {
         try {
             $data = $request->validate([
                 'subject_code' => 'required|string|max:255',
                 'subject_name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000'
+                'description' => 'nullable|string|max:1000',
+                'program' => 'required|string|max:255',
+                'year_level' => 'required|integer|min:1|max:4',
+                'section' => 'required|in:A,B,C,D,E'
             ]);
 
+            $didProgramYearSectionChanged = $subject->program !== $request->input('program') ||
+                $subject->year_level !== $request->input('year_level') ||
+                $subject->section !== $request->input('section');
+
             $subject->update($data);
+
+            if ($didProgramYearSectionChanged) {
+                $this->reenrollStudents($subject);
+            }
 
             return response()->json([
                 'message' => 'Subject updated successfully.',
