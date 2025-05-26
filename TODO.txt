@@ -5,7 +5,7 @@ DONE. Addition of section (A-E) of students.
 DONE. Input validation of section
 DONE. Edit functionalities of new fields of studen ts and subjects
 DONE. Update the students enrolled once program, year_level, or section changes in the subject
-7. Make pages responsive
+DONE. Make pages responsive
 
 Hard Priority:
 1. Integrate phone scanner
