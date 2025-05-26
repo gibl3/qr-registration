@@ -12,12 +12,8 @@
     </a>
     <h1 class="text-xl font-semibold text-center">Edit Instructor Details</h1>
 </header>
-
-<!-- Main Content -->
-<main class="flex-1 flex flex-col items-center justify-center min-h-0 px-4 mx-64 mt-12">
-
-    <!-- Edit Form Section -->
-    <section class="w-full max-w-lg bg-neutral-100/30 p-6 rounded-lg shadow-md ">
+<main class="flex-1 flex flex-col items-center justify-center min-h-0 px-2 md:px-4 lg:px-8 mt-6 md:mt-10">
+    <section class="w-full max-w-md md:max-w-lg bg-neutral-100/30 p-4 md:p-6 rounded-lg shadow-md">
         <h2 class="text-2xl font-semibold text-center mb-4">Instructor Details</h2>
 
         @if (session('success'))

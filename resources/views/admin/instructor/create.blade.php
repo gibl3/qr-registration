@@ -6,9 +6,9 @@
 
 @section('content')
 <!-- Main Content -->
-<main class="flex-1 flex flex-col items-center justify-center min-h-0 px-4 mx-32 mt-10">
+<main class="flex-1 flex flex-col items-center justify-center min-h-0 px-2 md:px-4 lg:px-8 mt-6 md:mt-10">
     <!-- Form Section -->
-    <section class="w-full max-w-lg bg-neutral-100/30 p-6 rounded-lg shadow-md ">
+    <section class="w-full max-w-md md:max-w-lg bg-neutral-100/30 p-4 md:p-6 rounded-lg shadow-md ">
         <div class="">
             <h2 class="text-2xl font-semibold text-center mb-4">Instructor Details</h2>
 

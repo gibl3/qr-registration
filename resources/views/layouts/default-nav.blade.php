@@ -13,19 +13,19 @@
 </head>
 
 <body class="bg-neutral-50 min-h-screen flex flex-col">
-    <nav class="shadow-xs w-full top-0 z-50 px-12 bg-white">
-        <div class="flex justify-start items-center py-2 gap-8">
-            <!-- Back Button -->
+    <nav class="shadow-xs w-full top-0 z-50 px-4 md:px-12 bg-white">
+        <div class="flex flex-col md:flex-row justify-start items-start md:items-center py-2 gap-2 md:gap-8">
+            <!-- Back/Home Button -->
             @if (url()->previous() !== url()->current())
-            <a href="{{ route('index') }}" class="btn-text">
-                <span class="material-symbols-rounded">
+            <a href="{{ route('index') }}" class="btn-text flex items-center gap-1 text-sm md:text-base">
+                <span class="material-symbols-rounded text-lg md:text-2xl">
                     arrow_back
                 </span>
                 Back
             </a>
             @else
-            <a href="{{ route('index') }}" class="btn-text">
-                <span class="material-symbols-rounded">
+            <a href="{{ route('index') }}" class="btn-text flex items-center gap-1 text-sm md:text-base">
+                <span class="material-symbols-rounded text-lg md:text-2xl">
                     home
                 </span>
                 Home
@@ -33,11 +33,11 @@
             @endif
 
             <!-- Page Title -->
-            <h1 class="text-2xl font-semibold">@yield('title', 'QR Attendance')</h1>
+            <h1 class="text-lg md:text-2xl font-semibold mt-1 md:mt-0">@yield('title', 'QR Attendance')</h1>
         </div>
     </nav>
 
-    <main class="flex-1 flex">
+    <main class="flex-1 flex flex-col">
         @yield('content')
     </main>
 </body>
