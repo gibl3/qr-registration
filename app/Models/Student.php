@@ -22,7 +22,7 @@ class Student extends Model
 
     public function setFirstNameAttribute($value)
     {
-        $this->attributes['first_name'] = ucfirst(strtolower($value));
+        $this->attributes['first_name'] = ucwords(strtolower($value));
     }
 
     public function setLastNameAttribute($value)
