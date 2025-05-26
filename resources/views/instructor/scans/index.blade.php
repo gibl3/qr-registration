@@ -22,10 +22,10 @@
                 <div class="bg-white rounded-2xl shadow-sm p-6 space-y-6">
 
                     <!-- Scanner Controls -->
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                         <!-- Subject Selection -->
-                        <div class="input-base p-0 w-fit">
-                            <select id="subject-select" class="input-base  border-r-[12px] border-transparent w-fit">
+                        <div class="input-base p-0 w-full sm:w-fit">
+                            <select id="subject-select" class="input-base border-r-[12px] border-transparent w-full sm:w-fit">
                                 <option value="">Select a subject...</option>
                                 @foreach($subjects as $subject)
                                 <option value="{{ $subject->id }}">{{ $subject->subject_name }} ({{ $subject->subject_code }})</option>

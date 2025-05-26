@@ -17,20 +17,20 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <h1 class="text-2xl font-bold text-gray-800">Attendance Records</h1>
-        <div class="flex items-center space-x-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-y-4 sm:gap-y-0 sm:gap-x-4">
             <!-- Subject Filter -->
-            <select id="subject-filter" class="rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3">
+            <select id="subject-filter" class="min-w-[200px] rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3">
                 <option value="">All Subjects</option>
                 @foreach ($subjects as $subject)
                     <option value="{{ $subject->id }}">{{ $subject->subject_code }}</option>
                 @endforeach
             </select>
             <!-- Date Filter -->
-            <div class="flex items-center justify-center space-x-4">
-                <input type="date" id="date-filter" class="rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3" value="{{ date('Y-m-d') }}">
-
+            <div class="flex items-center gap-x-2">
+                <input type="date" id="date-filter" class="min-w-[180px] rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3" value="{{ date('Y-m-d') }}">
                 <button id="clear-date" class="btn-base p-0">
                     <span class="material-symbols-rounded">clear</span>
                 </button>
@@ -42,53 +42,54 @@
     <div class="flex items-center justify-between bg-white rounded-lg shadow-sm p-4">
         <button id="prev-date" class="btn-text flex items-center space-x-2">
             <span class="material-symbols-rounded">chevron_left</span>
-            <span>Previous Day</span>
+            <span class="hidden sm:inline">Previous Day</span>
         </button>
-        <div class="text-lg font-medium text-gray-700" id="current-date">
+        <div class="text-base sm:text-lg font-medium text-gray-700" id="current-date">
             {{ date('F d, Y') }}
         </div>
         <button id="next-date" class="btn-text flex items-center space-x-2">
-            <span>Next Day</span>
+            <span class="hidden sm:inline">Next Day</span>
             <span class="material-symbols-rounded">chevron_right</span>
         </button>
     </div>
 
+    <!-- Table Section -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time In</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time In</th>
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="attendance-table-body">
                     @foreach ($attendances as $attendance)
                     <tr class="hover:bg-gray-50" data-date="{{ $attendance->date }}" data-subject="{{ $attendance->subject->id ?? '' }}">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">
                                 {{ $attendance->student->student_id }}
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $attendance->first_name }} {{ $attendance->last_name }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">{{ $attendance->date }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">{{ $attendance->time_in }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">
                                 {{ ucfirst($attendance->status) }}
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">{{ $attendance->subject->subject_name ?? 'N/A' }}</div>
                         </td>
                     </tr>
