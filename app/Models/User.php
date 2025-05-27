@@ -46,4 +46,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'email_address', 'email');
+    }
+
+    public function isStudent()
+    {
+        return $this->role === 'student';
+    }
 }
