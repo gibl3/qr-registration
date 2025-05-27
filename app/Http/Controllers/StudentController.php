@@ -7,6 +7,11 @@ use App\Models\Student;
 
 class StudentController extends Controller
 {
+    public function showDashboard()
+    {
+        return view('student.index');
+    }
+
     public function index()
     {
         $students = Student::all();
@@ -20,7 +25,7 @@ class StudentController extends Controller
     }
 
     public function update(Student $student, Request $request)
-    {                
+    {
         $data = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
