@@ -17,7 +17,18 @@
             <div class="space-y-4">
                 <div class="flex justify-center">
                     <div class="grid grid-cols-2 gap-4 max-w-md">
-                        <!-- Admin Role -->
+                        <!-- Student Role -->
+                        <label class="flex flex-col cursor-pointer">
+                            <input type="radio" name="role" value="student" class="peer sr-only" checked>
+                            <div class="btn-filled-tonal w-full bg-neutral-200/60  hover:bg-emerald-50 peer-checked:border-red-500 peer-checked:bg-emerald-50 transition-colors">
+                                <span class="material-symbols-rounded text-emerald-600">
+                                    manage_accounts
+                                </span>
+                                <p class="text-sm font-medium text-neutral-700">Student</p>
+                            </div>
+                        </label>
+
+                        <!-- Instructor Role -->
                         <label class="relative flex cursor-pointer">
                             <input type="radio" name="role" value="instructor" class="peer sr-only">
                             <div class="btn-filled-tonal w-full bg-neutral-200/60  hover:bg-emerald-50 peer-checked:border-red-500 peer-checked:bg-emerald-50 transition-colors">
@@ -25,17 +36,6 @@
                                     school
                                 </span>
                                 <p class="text-sm font-medium text-neutral-700">Instructor</p>
-                            </div>
-                        </label>
-
-                        <!-- Instructor Role -->
-                        <label class="flex flex-col cursor-pointer">
-                            <input type="radio" name="role" value="admin" class="peer sr-only" checked>
-                            <div class="btn-filled-tonal w-full bg-neutral-200/60  hover:bg-emerald-50 peer-checked:border-red-500 peer-checked:bg-emerald-50 transition-colors">
-                                <span class="material-symbols-rounded text-emerald-600">
-                                    manage_accounts
-                                </span>
-                                <p class="text-sm font-medium text-neutral-700">Admin</p>
                             </div>
                         </label>
                     </div>
