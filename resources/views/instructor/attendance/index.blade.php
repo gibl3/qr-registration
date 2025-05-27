@@ -20,37 +20,64 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <h1 class="text-2xl font-bold text-gray-800">Attendance Records</h1>
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-y-4 sm:gap-y-0 sm:gap-x-4">
-            <!-- Subject Filter -->
-            <select id="subject-filter" class="min-w-[200px] rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3">
+
+        <!-- Filters -->
+        <div class="flex items-center gap-2">
+            <select id="subject-filter" class="min-w-[200px] rounded-full border-neutral-300 text-sm bg-neutral-200/50 py-1.5 px-3">
                 <option value="">All Subjects</option>
                 @foreach ($subjects as $subject)
-                    <option value="{{ $subject->id }}">{{ $subject->subject_code }}</option>
+                <option value="{{ $subject->id }}">{{ $subject->subject_code }}</option>
                 @endforeach
             </select>
-            <!-- Date Filter -->
+
             <div class="flex items-center gap-x-2">
-                <input type="date" id="date-filter" class="min-w-[180px] rounded-full border-gray-300 text-sm bg-emerald-200/50 py-1.5 px-3" value="{{ date('Y-m-d') }}">
+                <input type="date" id="date-filter" class="min-w-[180px] rounded-full border-neutral-300 text-sm bg-neutral-200/50 py-1.5 px-3" value="{{ date('Y-m-d') }}">
                 <button id="clear-date" class="btn-base p-0">
-                    <span class="material-symbols-rounded">clear</span>
+                    <span class="material-symbols-rounded text-neutral-600">clear</span>
                 </button>
+            </div>
+
+            <!-- Action Dropdown -->
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open" @keydown.escape="open = false" class="btn-text shadow-xs rounded-full p-1.5 bg-neutral-200/60 hover:bg-neutral-200 focus:outline-none" aria-haspopup="true" :aria-expanded="open">
+                    <span class="material-symbols-rounded text-neutral-600">more_vert</span>
+                </button>
+
+                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 py-1 border border-neutral-200" x-cloak>
+                    <a href="{{ route('instructor.attendance.markAbsentPage') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                        <span class="material-symbols-rounded">person_off</span>
+                        Mark Absent
+                    </a>
+                    <button id="scan-qr-btn" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50">
+                        <span class="material-symbols-rounded">qr_code_scanner</span>
+                        Scan QR
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Date Navigation -->
     <div class="flex items-center justify-between bg-white rounded-lg shadow-sm p-4">
-        <button id="prev-date" class="btn-text flex items-center space-x-2">
-            <span class="material-symbols-rounded">chevron_left</span>
-            <span class="hidden sm:inline">Previous Day</span>
-        </button>
-        <div class="text-base sm:text-lg font-medium text-gray-700" id="current-date">
-            {{ date('F d, Y') }}
+        <div class="flex flex-1 justify-start">
+            <button id="prev-date" class="btn-text flex items-center space-x-2">
+                <span class="material-symbols-rounded">chevron_left</span>
+                <span class="hidden sm:inline">Previous Day</span>
+            </button>
         </div>
-        <button id="next-date" class="btn-text flex items-center space-x-2">
-            <span class="hidden sm:inline">Next Day</span>
-            <span class="material-symbols-rounded">chevron_right</span>
-        </button>
+
+        <div class="flex flex-1 justify-center">
+            <p class="text-base sm:text-lg font-medium text-gray-700" id="current-date">
+                {{ date('F d, Y') }}
+            </p>
+        </div>
+
+        <div class="flex flex-1 justify-end">
+            <button id="next-date" class="btn-text flex items-center space-x-2">
+                <span class="hidden sm:inline">Next Day</span>
+                <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+        </div>
     </div>
 
     <!-- Table Section -->
@@ -86,7 +113,13 @@
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">
-                                {{ ucfirst($attendance->status) }}
+                                @if($attendance->status === 'present')
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Present</span>
+                                @elseif($attendance->status === 'absent')
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Absent</span>
+                                @else
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">{{ ucfirst($attendance->status) }}</span>
+                                @endif
                             </div>
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
@@ -119,6 +152,7 @@
         const tableBody = document.getElementById('attendance-table-body');
         const noRecords = document.getElementById('no-records');
         const subjectFilter = document.getElementById('subject-filter');
+        const scanQrBtn = document.getElementById('scan-qr-btn');
         const rows = tableBody.getElementsByTagName('tr');
 
         function toLocalDateString(date) {
@@ -196,6 +230,12 @@
             const current = new Date(dateFilter.value || new Date());
             current.setDate(current.getDate() + 1);
             filterBySubjectAndDate(subjectFilter.value, current);
+        });
+
+        // Scan QR Code functionality
+        scanQrBtn.addEventListener('click', function() {
+            // Implement scan QR code functionality
+            alert('Scan QR Code functionality not implemented yet.');
         });
     });
 </script>
