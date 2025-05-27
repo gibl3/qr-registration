@@ -16,10 +16,8 @@ class InstructorMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === 'instructor') {
-            return $next($request);
-        }
-
-        return redirect()->route('login')->withErrors(['error' => 'You need to login as instructor.']);
+        abort_if(!Auth::check(), 404);
+        abort_if(Auth::user()->role !== 'instructor', 401);
+        return $next($request);
     }
 }

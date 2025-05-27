@@ -16,10 +16,8 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
-        }
-
-        return redirect()->route('login')->withErrors(['error' => 'You need to login as admin.']);
+        abort_if(!Auth::check(), 404);
+        abort_if(Auth::user()->role !== 'admin', 401);
+        return $next($request);
     }
 }
