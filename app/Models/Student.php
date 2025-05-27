@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash;
 
 class Student extends Model
 {
@@ -33,5 +34,25 @@ class Student extends Model
     public function subjects()
     {
         return $this->belongsToMany(Subject::class, 'subject_student');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'email', 'email_address');
+    }
+
+    public function createUserAccount($password)
+    {
+        return $this->user()->create([
+            'name' => $this->first_name . ' ' . $this->last_name,
+            'email' => $this->email_address,
+            'password' => Hash::make($password),
+            'role' => 'student'
+        ]);
     }
 }
