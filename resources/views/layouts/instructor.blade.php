@@ -7,6 +7,17 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Add Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        .icon-filled {
+            font-variation-settings:
+                'FILL' 1,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+
     <!-- Alpine.js for dropdown -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     @vite(['resources/css/app.css'])
@@ -27,8 +38,8 @@
                 @auth
                 <!-- Dropdown for settings and logout -->
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @keydown.escape="open = false" class="btn-text shadow-xs rounded-full p-2.5 bg-neutral-200/60 hover:bg-neutral-200 focus:outline-none" aria-haspopup="true" :aria-expanded="open">
-                        <span class="material-symbols-rounded text-neutral-600">settings</span>
+                    <button @click="open = !open" @keydown.escape="open = false" class="btn-text p-0 bg-neutral-200/90 hover:bg-neutral-200 focus:outline-none" aria-haspopup="true" :aria-expanded="open">
+                        <span class="material-symbols-rounded text-neutral-600/90 md-icon-36 icon-filled">account_circle</span>
                     </button>
 
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-neutral-50 rounded-md shadow-lg z-50 py-1 border border-neutral-200" x-cloak>
@@ -61,29 +72,29 @@
         @auth
         <!-- Left Sidebar for desktop -->
         <div class="hidden sm:block w-56 md:w-64 h-[calc(100vh-4rem)] bg-white shadow-md py-4 px-4 md:px-8 overflow-y-auto">
-            <div class="space-y-2">
+            <div class="space-y-2 text-neutral-700">
                 <a href="{{ route('instructor.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('dashboard-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                    <span class="material-symbols-rounded">dashboard</span>
                     <span class="font-medium">Dashboard</span>
                 </a>
 
                 <a href="{{ route('instructor.scan.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('scan-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">qr_code_scanner</span>
+                    <span class="material-symbols-rounded">qr_code_scanner</span>
                     <span class="font-medium">Scan QR</span>
                 </a>
 
                 <a href="{{ route('instructor.subjects.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('subjects-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">subject</span>
+                    <span class="material-symbols-rounded">subject</span>
                     <span class="font-medium">Subjects</span>
                 </a>
 
                 <a href="{{ route('instructor.attendance.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('attendance-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">list_alt</span>
+                    <span class="material-symbols-rounded">list_alt</span>
                     <span class="font-medium">Attendance</span>
                 </a>
 
                 <a href="{{ route('instructor.students.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('students-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">person_book</span>
+                    <span class="material-symbols-rounded">person_book</span>
                     <span class="font-medium">Students</span>
                 </a>
             </div>
