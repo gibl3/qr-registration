@@ -81,4 +81,36 @@ class ScanController extends Controller
             ], 500);
         }
     }
+
+    public function thirdPartyIndex(Request $request)
+    {
+        // from q GET argument
+        $qrCode = $request->query('q');
+
+        if (!$qrCode) {
+            return $this->index();
+        }
+
+        $instructor = auth()->user();
+        $subjects = Subject::where('instructor_id', $instructor->id)->get();
+        
+        $studentID = $qrCode;
+        $student = Student::where('student_id', $studentID)->first();
+        if (!$student) {
+            return redirect()->route('instructor.scan.index')->withErrors(['message' => 'No student found with this ID.']);
+        }
+
+        // Check if the student is enrolled in any of the instructor's subjects
+        $enrolledSubjects = $student->subjects()->whereIn('subjects.id', $subjects->pluck('id'))->get();
+        if ($enrolledSubjects->isEmpty()) {
+            return redirect()->route('instructor.scan.index')->withErrors(['message' => 'Student is not enrolled in any of your subjects.']);
+        }
+
+        return view('instructor.scans.other', [
+            'qrCode' => $qrCode,
+            'subjects' => $enrolledSubjects,
+            'student' => $student,
+        ]);
+    }
+    
 }

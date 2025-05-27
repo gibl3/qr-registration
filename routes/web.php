@@ -51,7 +51,9 @@ Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->g
 
     // Scan Routes
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
+    Route::get('/scan/other', [ScanController::class, 'thirdPartyIndex'])->name('scan.other');
     Route::post('/scan/store', [ScanController::class, 'store'])->name('scan.store');
+    Route::post('/scan/store/other', [ScanController::class, 'store'])->name('scan.store.other');
 
     Route::prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/', [AttendanceController::class, 'index'])->name('index');

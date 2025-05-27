@@ -13,7 +13,7 @@ export default defineConfig({
                 'resources/js/student/delete-student.js',
                 'resources/js/scan/scan.js',
                 'resources/js/scan/scan2.js',
-                'resources/js/scan/phonescan.js',
+                'resources/js/scan/thirdpartyscan.js',
                 // 'resources/js/delete-attendances.js',
                 'resources/js/auth/login.js',
                 'resources/js/instructor/delete.js',
