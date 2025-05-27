@@ -73,7 +73,7 @@ class SubjectController extends Controller
         DB::table('subject_student')
             ->where('subject_id', $subject->id)
             ->delete();
-        
+
         $this->automaticEnrollStudents($subject);
     }
 
@@ -123,6 +123,21 @@ class SubjectController extends Controller
         })->get();
 
         return view('instructor.subjects.show', compact('subject', 'students'));
+    }
+
+    public function getStudents(Subject $subject)
+    {
+        $date = request()->query('date', now()->toDateString());
+
+        $students = $subject->students()
+            ->whereDoesntHave('attendances', function ($query) use ($subject, $date) {
+                $query->where('subject_id', $subject->id)
+                    ->whereDate('date', $date);
+            })
+            ->select('students.id', 'students.first_name', 'students.last_name', 'students.student_id')
+            ->get();
+
+        return response()->json(['students' => $students]);
     }
 
     public function destroy(Subject $subject)
