@@ -14,6 +14,11 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function adminLogin()
+    {
+        return view('auth.admin-login');
+    }
+
     public function storeAdmin()
     {
         // User::create([
@@ -30,21 +35,32 @@ class AuthController extends Controller
             $data = $request->validate([
                 "email" => "required|email",
                 "password" => "required",
-                "role" => "required|in:admin,instructor"
+                "role" => "sometimes|in:student,instructor,admin"
             ]);
+
+            // If role is not provided, assume it's an admin login
+            if (!isset($data['role'])) {
+                $data['role'] = 'admin';
+            }
 
             if (Auth::attempt($data)) {
                 $request->session()->regenerate();
 
-                if (Auth::user()->role === 'admin') {
+                if (Auth::user()->role === 'student') {
                     return response()->json([
-                        'redirect' => route('admin.index'),
+                        'redirect' => route('student.showDashboard'),
                     ]);
                 }
 
                 if (Auth::user()->role === 'instructor') {
                     return response()->json([
                         'redirect' => route('instructor.index'),
+                    ]);
+                }
+
+                if (Auth::user()->role === 'admin') {
+                    return response()->json([
+                        'redirect' => route('admin.index'),
                     ]);
                 }
             }
