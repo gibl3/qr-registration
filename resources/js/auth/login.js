@@ -1,3 +1,5 @@
+import { setupPasswordToggle } from "../utils/utils.js";
+
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.querySelector("#login-form");
     const errorsDiv = document.querySelector("#errors-div");
@@ -37,6 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
             displayValidationErrors("An error occurred. Please try again.");
         }
     });
+
+    setupPasswordToggle(
+        document.getElementById("toggle-password"),
+        document.getElementById("password")
+    );
 
     function handleSuccess(data) {
         window.location.href = data.redirect;
