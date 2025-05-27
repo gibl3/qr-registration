@@ -38,6 +38,10 @@ class RegistrationController extends Controller
 
             $student = Student::create($data);
 
+            // Create user account with password pattern: surname-student-id
+            $password = strtolower($data['last_name']) . '-' . $data['student_id'];
+            $student->createUserAccount($password);
+
             // Generate the GoQR API URL with the encrypted student_id as the QR code content
             $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" . urlencode($student->student_id);
 
