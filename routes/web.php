@@ -27,6 +27,7 @@ use App\Http\Controllers\SubjectController;
 Route::get('/', fn() => view('index'))->name('index');
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::get('/login/admin', [AuthController::class, 'adminLogin'])->name('admin.login');
 
 Route::post('/login/auth', [AuthController::class, 'authenticate'])->name('login.auth');
 
@@ -46,8 +47,6 @@ Route::prefix('student')->name('registration.')->group(function () {
 
 // Instructor Routes
 Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->group(function (): void {
-
-
     Route::get('/', [InstructorController::class, 'index'])->name('index');
 
     // Scan Routes
@@ -56,11 +55,11 @@ Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->g
 
     Route::prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/', [AttendanceController::class, 'index'])->name('index');
+        Route::get('/mark-absent', [AttendanceController::class, 'markAbsentPage'])->name('markAbsentPage');
+        Route::post('/mark-absent', [AttendanceController::class, 'markAbsent'])->name('markAbsent');
 
-        Route::get('/{attendance}/edit', [AttendanceController::class,   'edit'])->name('edit');
-
+        Route::get('/{attendance}/edit', [AttendanceController::class, 'edit'])->name('edit');
         Route::put('/{attendance}/update', [AttendanceController::class, 'update'])->name('update');
-
         Route::post('/delete', [AttendanceController::class, 'destroyMany'])->name('destroyMany');
     });
 
@@ -87,6 +86,7 @@ Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->g
         function () {
             Route::get('/', [SubjectController::class, 'index'])->name('index');
             Route::get('/{subject}/show', [SubjectController::class, 'show'])->name('show');
+            Route::get('/{subject}/students', [SubjectController::class, 'getStudents'])->name('students');
 
             Route::post('/store', [SubjectController::class, 'store'])->name('store');
 
@@ -119,4 +119,8 @@ Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function (
             Route::post('/delete', [InstructorController::class, 'destroyMany'])->name('destroyMany');
         }
     );
+});
+
+Route::prefix('student')->name('student.')->middleware(['auth'])->group(function () {
+    Route::get('/', [StudentController::class, 'showDashboard'])->name('showDashboard');
 });
