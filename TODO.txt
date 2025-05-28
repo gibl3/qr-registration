@@ -8,7 +8,7 @@ DONE. Update the students enrolled once program, year_level, or section changes 
 DONE. Make pages responsive
 
 Hard Priority:
-1. Integrate phone scanner
+DONE. Integrate phone scanner
 DONE. Add program, year, and section to the create subject
 DONE. Automatically enroll students with the same program, year, and section as 
     the newly created subject
