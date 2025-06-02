@@ -86,6 +86,12 @@ class ScanController extends Controller
     {
         // from q GET argument
         $qrCode = $request->query('q');
+        $subjectCode = $request->query('s');
+
+        // add space before digits in $subjectCode
+        if ($subjectCode) {
+            $subjectCode = preg_replace('/(\d+)/', ' $1', $subjectCode);
+        }
 
         if (!$qrCode) {
             return $this->index();
@@ -100,8 +106,13 @@ class ScanController extends Controller
             return redirect()->route('instructor.scan.index')->withErrors(['message' => 'No student found with this ID.']);
         }
 
-        // Check if the student is enrolled in any of the instructor's subjects
         $enrolledSubjects = $student->subjects()->whereIn('subjects.id', $subjects->pluck('id'))->get();
+        if ($subjectCode) {
+            $enrolledSubjects = $enrolledSubjects->sortBy(function ($subject) use ($subjectCode) {
+                return $subject->subject_code === $subjectCode ? 1 : 0;
+            });
+        }
+
         if ($enrolledSubjects->isEmpty()) {
             return redirect()->route('instructor.scan.index')->withErrors(['message' => 'Student is not enrolled in any of your subjects.']);
         }

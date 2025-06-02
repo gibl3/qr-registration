@@ -23,7 +23,6 @@
                             <div class="input-base p-0 w-full sm:w-fit">
                                 <select id="subject-select"
                                     class="input-base border-r-[12px] border-transparent w-full sm:w-fit">
-                                    <option value="">Select a subject...</option>
                                     @foreach ($subjects as $subject)
                                         <option value="{{ $subject->id }}">{{ $subject->subject_name }}
                                             ({{ $subject->subject_code }})
