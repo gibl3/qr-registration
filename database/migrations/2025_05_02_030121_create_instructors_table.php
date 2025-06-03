@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('first_name'); // Instructor's name
             $table->string('last_name'); // Instructor's name
             $table->string('email')->unique(); // Unique email address
-            $table->string('department'); // Department name
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade'); // Foreign key to departments table
             $table->timestamps();
         });
     }

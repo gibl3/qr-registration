@@ -13,7 +13,7 @@ class Instructor extends Model
         'first_name',
         'last_name',
         'email',
-        'department',
+        'department_id',
     ];
 
     public function subjects()
