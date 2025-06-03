@@ -43,7 +43,10 @@
                 <label for="department" class="text-sm font-medium text-neutral-700">Department</label>
                 <div class="input-base p-0">
                     <select id="department" name="department" class="input-base border-r-[12px] border-transparent">
-                        <option value="computer_studies">Computer Studies Department</option>
+                        <option value="">Select Department</option>
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>

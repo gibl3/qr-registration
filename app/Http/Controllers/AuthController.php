@@ -21,12 +21,12 @@ class AuthController extends Controller
 
     public function storeAdmin()
     {
-        // User::create([
-        //     'name' => 'bgboi',
-        //     'email' => 'admin@123.com',
-        //     'password' => Hash::make('admin'),
-        //     'role' => 'admin'
-        // ]);
+        User::create([
+            'name' => 'bgboi',
+            'email' => 'admin@evsu.edu.ph',
+            'password' => Hash::make('admin'),
+            'role' => 'admin'
+        ]);
     }
 
     public function authenticate(Request $request)

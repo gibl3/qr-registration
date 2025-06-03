@@ -6,6 +6,7 @@ use App\Models\Instructor;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Attendance;
+use App\Models\Department;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -105,7 +106,11 @@ class InstructorController extends Controller
      */
     public function create()
     {
-        return view('admin.instructor.create');
+        $departments = Department::all();
+        
+        return view('admin.instructor.create', [
+            'departments' => $departments,
+        ]);
     }
 
     /**
@@ -115,12 +120,12 @@ class InstructorController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate the request data
+            // Validate the request data and department id from departments table
             $data = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:instructors,email',
-                'department' => 'required|in:computer_studies'
+                'department' => 'required|exists:departments,id', // Ensure department exists
             ]);
 
             // Create a new Instructor record and a corresponding user account for login

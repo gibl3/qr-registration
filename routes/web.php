@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubjectStudentController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\SettingsController;
@@ -110,6 +111,16 @@ Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function (
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
 
     // Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::prefix('department')->name('department.')->group(
+        function () {
+            Route::get('/', [DepartmentController::class, 'index'])->name('index');
+            // Route::get('/add', [DepartmentController::class, 'create'])->name('create');
+            Route::post('/store', [DepartmentController::class, 'store'])->name('store');
+            Route::put('/{department}/update', [DepartmentController::class, 'update'])->name('update');
+            Route::delete('/{department}/destroy', [DepartmentController::class, 'destroy'])->name('destroy');
+        }
+    );
 
     Route::prefix('instructor')->name('instructor.')->group(
         function () {

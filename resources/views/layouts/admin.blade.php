@@ -52,6 +52,10 @@
                     <span class="material-symbols-rounded text-emerald-600">dashboard</span>
                     <span class="font-medium">Dashboard</span>
                 </a>
+                <a href="{{ route('admin.department.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('department-bg', '')">
+                        <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                        <span class="font-medium">Departments</span>
+                    </a>
                 <a href="{{ route('admin.instructor.create') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('instructor-bg', '')">
                     <span class="material-symbols-rounded text-emerald-600">person_add</span>
                     <span class="font-medium">Add Instructors</span>
@@ -78,6 +82,10 @@
                     <a href="{{ route('admin.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('dashboard-bg', '')">
                         <span class="material-symbols-rounded text-emerald-600">dashboard</span>
                         <span class="font-medium">Dashboard</span>
+                    </a>
+                    <a href="{{ route('admin.instructor.create') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('department-bg', '')">
+                        <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                        <span class="font-medium">Departments</span>
                     </a>
                     <a href="{{ route('admin.instructor.create') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('instructor-bg', '')">
                         <span class="material-symbols-rounded text-emerald-600">person_add</span>

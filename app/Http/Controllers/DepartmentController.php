@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
+use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
@@ -13,7 +14,9 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        //
+        $departments = Department::all();
+
+        return view('admin.department.index', compact('departments'));
     }
 
     /**
@@ -27,9 +30,15 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDepartmentRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:departments,name',
+        ]);
+
+        Department::create($validatedData);
+
+        return redirect()->route('admin.department.index')->with('success', 'Department created successfully.');
     }
 
     /**
@@ -51,16 +60,24 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDepartmentRequest $request, Department $department)
+    public function update(Request $request, Department $department)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+        ]);
+
+        $department->update($validatedData);
+
+        return redirect()->route('admin.department.index')->with('success', 'Department updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Department $department)
-    {
-        //
+    {        
+        $department->delete();
+        
+        return redirect()->route('admin.department.index')->with('success', 'Department deleted successfully.');
     }
 }
