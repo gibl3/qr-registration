@@ -88,7 +88,7 @@ Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->g
 
     Route::prefix('subjects')->name('subjects.')->group(
         function () {
-            Route::get('/', [SubjectController::class, 'index'])->name('index');
+            Route::get('/', [SubjectController::class, 'instructorIndex'])->name('index');
             Route::get('/{subject}/show', [SubjectController::class, 'show'])->name('show');
             Route::get('/{subject}/students', [SubjectController::class, 'getStudents'])->name('students');
 
@@ -129,6 +129,15 @@ Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function (
             Route::post('/store', [ProgramController::class, 'store'])->name('store');
             Route::put('/{program}/update', [ProgramController::class, 'update'])->name('update');
             Route::delete('/{program}/destroy', [ProgramController::class, 'destroy'])->name('destroy');
+        }
+    );
+
+    Route::prefix('subject')->name('subject.')->group(
+        function () {
+            Route::get('/', [SubjectController::class, 'index'])->name('index');
+            Route::post('/store', [SubjectController::class, 'store'])->name('store');
+            Route::put('/{subject}/update', [SubjectController::class, 'update'])->name('update');
+            Route::delete('/{subject}/destroy', [SubjectController::class, 'destroy'])->name('destroy');
         }
     );
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instructor;
+use App\Models\Program;
 use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
@@ -12,6 +13,12 @@ class SubjectController extends Controller
 {
     public function index()
     {
+        $subjects = Subject::with('program')->get();
+        $programs = Program::all();
+        return view('admin.subject.index', compact('subjects', 'programs'));
+    }
+
+    public function instructorIndex() {
         $subjects = Subject::where('instructor_id', auth()->id())->get();
         $instructor = Instructor::find(auth()->id());
         return view('instructor.subjects.index', ['subjects' => $subjects, 'instructor' => $instructor]);
