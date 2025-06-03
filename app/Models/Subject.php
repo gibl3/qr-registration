@@ -26,4 +26,9 @@ class Subject extends Model
     {
         return $this->belongsTo(Instructor::class, 'instructor_id');
     }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
 }

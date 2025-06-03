@@ -37,8 +37,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/store', [AuthController::class, 'storeAdmin'])->name('store');
 
-// Route::get('/create-admin', [AuthController::class, 'storeAdmin'])
-//     ->name('storeAdmin');
+Route::get('/create-admin', [AuthController::class, 'storeAdmin'])
+    ->name('storeAdmin');
 
 // Student Registration Routes
 Route::prefix('student')->name('registration.')->group(function () {

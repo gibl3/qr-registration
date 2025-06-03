@@ -29,14 +29,12 @@ class SubjectController extends Controller
         $subject = null;
         try {
             $data = $request->validate([
-                'subject_code' => 'required|string|max:255',
-                'subject_name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000',
-                'program' => 'required|string|max:255',
+                'code' => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'program_id' => 'required|exists:programs,id',
                 'year_level' => 'required|integer|min:1|max:4',
-                'section' => 'required|in:A,B,C,D,E'
             ]);
-            $data['instructor_id'] = auth()->id();
+            $data['admin_id'] = auth()->id();
 
             $subject = Subject::create($data);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -50,14 +48,53 @@ class SubjectController extends Controller
             ], 500);
         }
 
-        if ($subject) {
-            $this->automaticEnrollStudents($subject);
-        }
-
         return response()->json([
             'message' => 'Subject added successfully.',
             'subject' => $subject
         ], 200);
+    }
+
+    public function update(Request $request, Subject $subject)
+    {
+        try {
+            $data = $request->validate([
+                'code' => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'program_id' => 'required|exists:programs,id',
+                'year_level' => 'required|integer|min:1|max:4',
+            ]);
+
+            // $didProgramYearSectionChanged = $subject->program !== $request->input('program') ||
+            //     $subject->year_level !== $request->input('year_level') ||
+            //     $subject->section !== $request->input('section');
+
+            $subject->update($data);
+
+            // if ($didProgramYearSectionChanged) {
+            //     $this->reenrollStudents($subject);
+            // }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while adding the subject.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'Subject updated successfully.',
+            'subject' => ['data' => $subject->only(['subject_code', 'subject_name'])],
+        ], 200);
+    }
+
+    public function destroy(Subject $subject)
+    {
+        $subject->delete();
+        
+        return $this->index();
     }
 
     private function automaticEnrollStudents(Subject $subject)
@@ -84,44 +121,6 @@ class SubjectController extends Controller
         $this->automaticEnrollStudents($subject);
     }
 
-    public function update(Request $request, Subject $subject)
-    {
-        try {
-            $data = $request->validate([
-                'subject_code' => 'required|string|max:255',
-                'subject_name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000',
-                'program' => 'required|string|max:255',
-                'year_level' => 'required|integer|min:1|max:4',
-                'section' => 'required|in:A,B,C,D,E'
-            ]);
-
-            $didProgramYearSectionChanged = $subject->program !== $request->input('program') ||
-                $subject->year_level !== $request->input('year_level') ||
-                $subject->section !== $request->input('section');
-
-            $subject->update($data);
-
-            if ($didProgramYearSectionChanged) {
-                $this->reenrollStudents($subject);
-            }
-
-            return response()->json([
-                'message' => 'Subject updated successfully.',
-                'subject' => ['data' => $subject->only(['subject_code', 'subject_name'])],
-            ], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'errors' => $e->errors(),
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred while adding the subject.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
     public function show(Subject $subject)
     {
         // Get all students that are not yet enrolled in this subject
@@ -145,13 +144,5 @@ class SubjectController extends Controller
             ->get();
 
         return response()->json(['students' => $students]);
-    }
-
-    public function destroy(Subject $subject)
-    {
-        $subject->delete();
-        return response()->json([
-            'message' => 'Subject deleted successfully!'
-        ]);
     }
 }

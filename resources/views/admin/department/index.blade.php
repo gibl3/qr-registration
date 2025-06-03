@@ -126,6 +126,6 @@
         
     });
 </script>
-@vite(['resources/js/department/store.js'])
+{{-- @vite(['resources/js/department/store.js']) --}}
 @endpush
 @endsection

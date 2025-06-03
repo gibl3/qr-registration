@@ -23,7 +23,6 @@
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Program</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Section</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Action</th>
                     </tr>
                 </thead>
@@ -37,16 +36,17 @@
                             <div class="text-gray-900">{{ $subject->name }}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-gray-900">{{ $subject->program->name ?? '-' }}</div>
+                            <div class="text-gray-900">{{ $subject->program->abbreviation ?? '-' }}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-gray-900">{{ $subject->year }}</div>
-                        </td>
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-gray-900">{{ $subject->section }}</div>
+                            <div class="text-gray-900">{{ $subject->year_level }}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap font-medium flex gap-2">
-                            <button class="text-blue-600 hover:text-blue-900" onclick="openEditModal({{ $subject->id }}, '{{ addslashes($subject->code) }}', '{{ addslashes($subject->name) }}', '{{ $subject->program_id }}', '{{ $subject->year }}', '{{ addslashes($subject->section) }}')">Edit</button>
+                            <button class="text-blue-600 hover:text-blue-900" onclick="openEditModal({{ $subject->id }}, 
+                                '{{ addslashes($subject->code) }}', 
+                                '{{ addslashes($subject->name) }}', 
+                                '{{ $subject->program_id }}', 
+                                '{{ $subject->year_level }}')">Edit</button>
                             <form action="{{ route('admin.subject.destroy', $subject) }}" method="post" class="inline" onsubmit="return confirm('Delete this subject?')">
                                 @csrf
                                 @method('DELETE')
@@ -82,7 +82,6 @@
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Program</label>
                 <select name="program_id" class="input-base w-full" required>
-                    <option value="">Select Program</option>
                     @foreach($programs as $program)
                         <option value="{{ $program->id }}">{{ $program->name }}</option>
                     @endforeach
@@ -90,7 +89,7 @@
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Year</label>
-                <select name="year" id="year-select" class="input-base w-full" required>
+                <select name="year_level" id="add-sub-year" class="input-base w-full" required>
                     <option value="1">1st Year</option>
                     <option value="2">2nd Year</option>
                     <option value="3">3rd Year</option>
@@ -123,7 +122,6 @@
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Program</label>
                 <select name="program_id" id="edit-program" class="input-base w-full" required>
-                    <option value="">Select Program</option>
                     @foreach($programs as $program)
                         <option value="{{ $program->id }}">{{ $program->name }}</option>
                     @endforeach
@@ -131,11 +129,12 @@
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Year</label>
-                <input type="number" name="year" id="edit-year" class="input-base w-full" min="1" max="10" required>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Section</label>
-                <input type="text" name="section" id="edit-section" class="input-base w-full" required autocomplete="off">
+                <select name="year_level" id="edit-year" class="input-base w-full" required>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
+                </select>
             </div>
             <div class="flex justify-end gap-2">
                 <button type="button" class="btn-text" onclick="closeEditModal()">Cancel</button>
@@ -153,22 +152,69 @@
     function closeAddModal() {
         document.getElementById('add-modal').classList.add('hidden');
     }
-    function openEditModal(id, code, name, programId, year, section) {
+    function openEditModal(id, code, name, programId, year) {
         document.getElementById('edit-modal').classList.remove('hidden');
         document.getElementById('edit-code').value = code;
         document.getElementById('edit-name').value = name;
         document.getElementById('edit-program').value = programId;
         document.getElementById('edit-year').value = year;
-        document.getElementById('edit-section').value = section;
         document.getElementById('edit-form').action = `/admin/subject/${id}/update`;
     }
     function closeEditModal() {
         document.getElementById('edit-modal').classList.add('hidden');
     }
+    async function storeSubject(event) {
+        event.preventDefault();
+        const form = document.getElementById('store-subject-form');
+        const formData = new FormData(form);
+        
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            location.reload();
+            return;
+        }
+
+        alert('Failed to add subject. Please try again.');
+        console.error('Error:', data.error);
+    }
+    
+    async function updateSubject(event) {
+        event.preventDefault();
+        const form = document.getElementById('edit-form');
+        const formData = new FormData(form);
+        
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            location.reload();
+            return;
+        }
+
+        alert('Failed to update subject. Please try again.');
+        console.error('Error:', data.error);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("add-modal-btn").addEventListener("click", openAddModal);
+        document.getElementById("store-subject-form").addEventListener("submit", storeSubject);
+        document.getElementById("edit-form").addEventListener("submit", updateSubject);
     });
 </script>
-@vite(['resources/js/subject/store.js'])
+
 @endpush
 @endsection
