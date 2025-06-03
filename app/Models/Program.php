@@ -9,4 +9,10 @@ class Program extends Model
 {
     /** @use HasFactory<\Database\Factories\ProgramFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'department_id',
+        'name',
+        'abbreviation',
+    ];
 }
