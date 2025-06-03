@@ -20,6 +20,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubjectStudentController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -119,6 +120,15 @@ Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function (
             Route::post('/store', [DepartmentController::class, 'store'])->name('store');
             Route::put('/{department}/update', [DepartmentController::class, 'update'])->name('update');
             Route::delete('/{department}/destroy', [DepartmentController::class, 'destroy'])->name('destroy');
+        }
+    );
+
+    Route::prefix('program')->name('program.')->group(
+        function () {
+            Route::get('/', [ProgramController::class, 'index'])->name('index');
+            Route::post('/store', [ProgramController::class, 'store'])->name('store');
+            Route::put('/{program}/update', [ProgramController::class, 'update'])->name('update');
+            Route::delete('/{program}/destroy', [ProgramController::class, 'destroy'])->name('destroy');
         }
     );
 

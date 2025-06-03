@@ -15,4 +15,9 @@ class Program extends Model
         'name',
         'abbreviation',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }
