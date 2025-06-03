@@ -13,10 +13,8 @@ class Subject extends Model
         'admin_id',
         'subject_code',
         'subject_name',
-        'description',
         'program_id',
         'year_level',
-        'section'
     ];
 
     public function students()

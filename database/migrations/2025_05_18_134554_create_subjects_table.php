@@ -19,8 +19,6 @@ return new class extends Migration
                 ->constrained('programs')
                 ->onDelete('cascade');
             $table->integer('year_level');
-            $table->enum('section', ['A', 'B', 'C', 'D', 'E'])->default('A');
-            $table->text('description')->nullable();
             $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
