@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('subject_code')->unique();
-            $table->string('subject_name');
+            $table->string('code')->unique();
+            $table->string('name');
             $table->foreignId('program_id')
                 ->constrained('programs')
                 ->onDelete('cascade');
