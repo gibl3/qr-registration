@@ -57,8 +57,12 @@
             <div class="space-y-2">
                 <label for="department" class="text-sm font-medium text-neutral-700">Department</label>
                 <div class="input-base p-0">
-                    <select id="department" name="department" class="input-base border-r-[12px] border-transparent">
-                        <option value="computer_studies" {{ $instructor->department === 'computer_studies' ? 'selected' : '' }}>Computer Studies Department</option>
+                    <select id="department" name="department_id" class="input-base w-full">
+                        @foreach ($departments as $department)
+                        <option value="{{ $department->id }}" {{ $instructor->department_id == $department->id ? 'selected' : '' }}>
+                            {{ $department->name }}
+                        </option>
+                        @endforeach
                     </select>
                 </div>
 

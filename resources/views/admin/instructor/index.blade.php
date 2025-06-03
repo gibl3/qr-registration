@@ -51,7 +51,7 @@
                             <div class="text-gray-500">{{ $instructor->email }}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-gray-500">{{ $instructor->department}}</div>
+                            <div class="text-gray-500">{{ $instructor->department->name}}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap font-medium">
                             <a href="{{ route('admin.instructor.edit', ['instructor' => $instructor]) }}"

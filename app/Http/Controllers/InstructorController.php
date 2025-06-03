@@ -88,14 +88,9 @@ class InstructorController extends Controller
      */
     public function showTable()
     {
-        $instructors = Instructor::all();
-        // Format department for display
-        $instructors->transform(function ($instructor) {
-            $instructor->department = $instructor->department === "computer_studies"
-                ? "Computer Studies"
-                : "Unknown Department";
-            return $instructor;
-        });
+        $instructors = Instructor::with('department')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.instructor.index', ["instructors" => $instructors]);
     }
@@ -119,13 +114,15 @@ class InstructorController extends Controller
      */
     public function store(Request $request)
     {
+        $instructor = null;
+        
         try {
             // Validate the request data and department id from departments table
             $data = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:instructors,email',
-                'department' => 'required|exists:departments,id', // Ensure department exists
+                'department_id' => 'required|exists:departments,id', // Ensure department exists
             ]);
 
             // Create a new Instructor record and a corresponding user account for login
@@ -143,13 +140,8 @@ class InstructorController extends Controller
                 'password' => "$instructor->last_name-instructor"
             ];
 
-            Notification::route('mail', $instructor->email)
-                ->notify(new InstructorCredentials($credentials));
-
-            return response()->json([
-                'message' => 'Instructor added successfully.',
-                'instructor' => ['name' => $instructor->only(['first_name', 'last_name']), 'password' => "$instructor->last_name-instructor"],
-            ], 200);
+            // Notification::route('mail', $instructor->email)
+            //     ->notify(new InstructorCredentials($credentials));
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'errors' => $e->errors(),
@@ -160,6 +152,14 @@ class InstructorController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+
+        return response()->json([
+            'message' => 'Instructor added successfully.',
+            'instructor' => [
+                'name' => $instructor->only(['first_name', 'last_name']), 
+                'password' => "$instructor->last_name-instructor"
+            ],
+        ], 200);
     }
 
 
@@ -168,7 +168,9 @@ class InstructorController extends Controller
      */
     public function edit(Instructor $instructor)
     {
-        return view('admin.instructor.edit', ["instructor" => $instructor]);
+        $departments = Department::all();
+        
+        return view('admin.instructor.edit', ["instructor" => $instructor, 'departments' => $departments]);
     }
 
 
@@ -182,14 +184,10 @@ class InstructorController extends Controller
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:students,student_id,' . $instructor->id,
-                'department' => 'required|in:computer_studies',
+                'department_id' => 'required|exists:departments,id', // Ensure department exists
             ]);
 
             $instructor->update($data);
-
-            return redirect()
-                ->route('admin.instructor.edit', ['instructor' => $instructor])
-                ->with('status', 'Instructor details updated successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'errors' => $e->errors(),
@@ -200,6 +198,8 @@ class InstructorController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+
+        return $this->showTable();
     }
 
 
