@@ -24,8 +24,8 @@
                                 <select id="subject-select"
                                     class="input-base border-r-[12px] border-transparent w-full sm:w-fit">
                                     @foreach ($subjects as $subject)
-                                        <option value="{{ $subject->id }}">{{ $subject->subject_name }}
-                                            ({{ $subject->subject_code }})
+                                        <option value="{{ $subject->subject->id }}">
+                                            {{ $subject->subject->code }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -51,7 +51,7 @@
                                         echo '<li><strong>Student ID: </strong>' . $student->student_id . '</li>';
                                         echo '<li><strong>First Name: </strong>' . $student->first_name . '</li>';
                                         echo '<li><strong>Last Name: </strong>' . $student->last_name . '</li>';
-                                        echo '<li><strong>Program: </strong>' . $student->program . '</li>';
+                                        echo '<li><strong>Program: </strong>' . $student->program->name . '</li>';
                                         echo '<li><strong>Section: </strong>' . $student->year_level . ' - ' . $student->section . '</li>';
                                         ?>
                                     </ul>

@@ -30,6 +30,10 @@ class Attendance extends Model
         return $this->hasMany(SubjectAdvised::class, 'id', 'subject_advised_id');
     }
 
+    public function subjectAdvisedbelongs() {
+        return $this->belongsTo(SubjectAdvised::class, 'subject_advised_id');
+    }
+
     public function student()
     {
         return $this->belongsTo(Student::class);

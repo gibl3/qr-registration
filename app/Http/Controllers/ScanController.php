@@ -120,7 +120,7 @@ class ScanController extends Controller
             return $this->index();
         }
 
-        $instructor = auth()->user();
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
         $subjectsAdvised = Subject::whereHas('instructors', function ($query) use ($instructor) {
             $query->where('instructor_id', $instructor->id);
         })->get();
@@ -131,19 +131,24 @@ class ScanController extends Controller
             return redirect()->route('instructor.scan.index')->withErrors(['message' => 'No student found with this ID.']);
         }
 
-        $enrolledSubjects = $student->subjects()->whereIn('subjects.id', $subjectsAdvised->pluck('id'))->get();
-        
+        $enrolledSubjects = $student->subjects()->with('subject')->get();
+
         // get the subject_id of the last attendance taken by the instructor
-        $subjectID = Attendance::where('student_id', $student->id)
-            ->whereHas('subject', function ($query) use ($instructor) {
+        $lastAttendance = Attendance::where('instructor_id', $instructor->id)
+            ->whereHas('subjectAdvisedbelongs', function ($query) use ($instructor) {
                 $query->where('instructor_id', $instructor->id);
             })
             ->latest()
-            ->value('subject_id');
-        
+            ->first();
+
+        $subjectID = null;
+        if ($lastAttendance && $lastAttendance->subjectAdvisedbelongs) {
+            $subjectID = $lastAttendance->subjectAdvisedbelongs->subject_id;
+        }    
+
         if ($subjectID) {
             $enrolledSubjects = $enrolledSubjects->sortBy(function ($subject) use ($subjectID) {
-                return $subject->id === $subjectID ? 1 : 0;
+                return $subject->subject_id === $subjectID ? 0 : 1;
             });
         }
 

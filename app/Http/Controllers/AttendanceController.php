@@ -18,12 +18,12 @@ class AttendanceController extends Controller
         $instructorID = Instructor::where('email', Auth::user()->email)->first()->id;
 
         $attendances = Attendance::with(['subjectAdvised.subject', 'student'])
-    ->whereHas('subjectAdvised', function ($query) use ($instructorID) {
-        $query->where('instructor_id', $instructorID);
-    })
-    ->orderBy('date', 'desc')
-    ->orderBy('time_in', 'desc')
-    ->get();
+            ->whereHas('subjectAdvised', function ($query) use ($instructorID) {
+                $query->where('instructor_id', $instructorID);
+            })
+            ->orderBy('date', 'desc')
+            ->orderBy('time_in', 'desc')
+            ->get();
 
         $subjects = SubjectAdvised::where('instructor_id', $instructorID)->get();
         
