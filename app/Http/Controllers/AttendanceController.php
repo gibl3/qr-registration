@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\Subject;
 use App\Models\Student;
+use App\Models\SubjectAdvised;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,15 +14,19 @@ class AttendanceController extends Controller
 
     public function index()
     {
-        $attendances = Attendance::with(['subject', 'student'])
-            ->whereHas('subject', function ($query) {
-                $query->where('instructor_id', Auth::id());
+        $instructorID = Auth::id();
+        
+        $attendances = Attendance::with(['subjectAdvised.subject', 'student'])
+            ->whereHas('subjectAdvised', function ($query) use ($instructorID) {
+                $query->whereHas('subject', function ($subQuery) use ($instructorID) {
+                    $subQuery->where('instructor_id', $instructorID);
+                });
             })
             ->orderBy('date', 'desc')
             ->orderBy('time_in', 'desc')
             ->get();
 
-        $subjects = Subject::where('instructor_id', Auth::id())->get();
+        $subjects = SubjectAdvised::where('instructor_id', Auth::id())->get();
         // if ($attendances->isEmpty()) {
         //     return view('instructor.attendance.index', compact('subjects'));
         // }

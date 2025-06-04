@@ -10,7 +10,7 @@ class Attendance extends Model
     use HasFactory;
     protected $fillable = [
         'student_id',
-        'subject_id',
+        'subject_advised_id',
         'instructor_id',
         'first_name',
         'last_name',
@@ -25,9 +25,9 @@ class Attendance extends Model
         return $this->belongsTo(Instructor::class);
     }
 
-    public function subject()
+    public function subjectAdvised()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->hasMany(SubjectAdvised::class, 'id', 'subject_advised_id');
     }
 
     public function student()
