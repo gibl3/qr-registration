@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onDelete('cascade'); // Foreign key to students table
-            // $table->foreignId('subject_id')->constrained()->onDelete('cascade');
-            $table->string('first_name')->nullable(); // Add first_name column
-            $table->string('last_name')->nullable();  // Add last_name column
-            $table->date('date'); // Date of attendance
-            $table->time('time_in')->nullable(); // Time the student checked in
-            $table->time('time_out')->nullable(); // Time the student checked out
-            $table->string('status')->default('present'); // Status (e.g., present, absent, late)
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
+            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('instructor_id')->constrained('instructors')->onDelete('cascade');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->date('date');
+            $table->time('time_in')->nullable();
+            $table->time('time_out')->nullable();
+            $table->string('status')->default('present');
             $table->timestamps();
         });
     }
