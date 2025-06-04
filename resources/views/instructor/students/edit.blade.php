@@ -73,8 +73,10 @@
             <div class="space-y-2">
                 <label for="program" class="font-medium">Program</label>
                 <div class="input-base p-0">
-                    <select id="program" name="program" class="input-base border-r-[12px] border-transparent">
-                        <option value="BSIT" {{ $student->program === 'BSIT' ? 'selected' : '' }}>Bachelor of Science in Information Technology</option>
+                    <select id="program" name="program_id" class="input-base border-r-[12px] border-transparent">
+                        @foreach ($programs as $program)
+                            <option value="{{ $program->id }}" {{ $student->program_id === $program->id ? 'selected' : '' }} >{{ $program->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 

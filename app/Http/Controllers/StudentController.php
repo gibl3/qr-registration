@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Program;
 use Illuminate\Http\Request;
 use App\Models\Student;
 
@@ -21,20 +22,22 @@ class StudentController extends Controller
 
     public function edit(Student $student)
     {
-        return view('instructor.students.edit', ['student' => $student]);
+        $programs = Program::all();
+
+        return view('instructor.students.edit', ['student' => $student, 'programs' => $programs]);
     }
 
     public function update(Student $student, Request $request)
     {
         $data = $request->validate([
+            'student_id' => 'required|string|max:20|unique:students,student_id,' . $student->id,
+            'email_address' => 'required|email|max:255|unique:students,email_address,' . $student->id,
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'program' => 'required|in:BSIT',
+            'program_id' => 'required|exists:programs,id',
             'year_level' => 'required|integer|min:1|max:4',
             'section' => 'required|in:A,B,C,D,E',
             'gender' => 'required|in:male,female',
-            'student_id' => 'required|string|max:20|unique:students,student_id,' . $student->id,
-            'email_address' => 'required|email|max:255|unique:students,email_address,' . $student->id,
         ]);
 
         $student->update($data);

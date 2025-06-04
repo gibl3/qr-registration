@@ -34,13 +34,11 @@
                         <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
                             <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                         </th>
+                        <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
                         <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Program</th>
                         <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Year</th>
                         <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Section</th>
-                        <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-                        <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
-                        <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Email</th>
                         <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
@@ -51,25 +49,19 @@
                             <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" data-id="{{ $student->id }}">
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
+                            <div class="text-gray-500">{{ $student->student_id ?? 'N/A' }}</div>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap">
                             <div class="font-medium text-gray-900">{{ $student->first_name }} {{ $student->last_name }}</div>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-gray-500">{{ $student->program }}</div>
+                            <div class="text-gray-500">{{ $student->program->abbreviation }}</div>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-gray-500">{{ $student->year_level }}</div>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-gray-500">{{ $student->section }}</div>
-                        </td>
-                        <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-gray-500">{{ ucfirst($student->gender) }}</div>
-                        </td>
-                        <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-gray-500">{{ $student->student_id ?? 'N/A' }}</div>
-                        </td>
-                        <td class="px-3 py-4 whitespace-nowrap max-w-[120px] truncate">
-                            <div class="text-gray-500" title="{{ $student->email_address }}">{{ $student->email_address }}</div>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap font-medium">
                             <a href="{{ route('instructor.students.edit', ['student' => $student]) }}"
