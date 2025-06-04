@@ -18,7 +18,8 @@ class Instructor extends Model
 
     public function subjects()
     {
-        return $this->hasMany(Subject::class);
+        return $this->belongsToMany(Subject::class, 'subject_advised', 'instructor_id', 'subject_id')
+            ->withPivot('section');
     }
 
     public function department()

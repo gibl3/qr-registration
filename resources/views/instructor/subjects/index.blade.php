@@ -24,7 +24,6 @@
             Add subject
         </button>
     </div>
-
     <!-- Subject Creation Modal -->
     <dialog id="subject-modal" class="inset-0 m-auto rounded-lg shadow-lg backdrop:bg-black/50">
         <div class="bg-neutral-50 p-6 w-md space-y-4">
@@ -40,43 +39,70 @@
                 <span class="block sm:inline"></span>
             </div>
 
-            <form action="{{ route('instructor.subjects.store') }}" method="POST" class="space-y-4" id="subject-form">
+            <form action="{{ route('instructor.subjects.advise') }}" method="POST" class="space-y-4" id="subject-form">
                 @csrf
 
-
-                <div class="space-y-2">
-                    <label for="subject_code" class="block text-sm font-sm text-neutral-700">Subject Code</label>
-                    <input type="text" name="subject_code" id="subject_code" required class="input-base">
-                </div>
-                <div class="space-y-2">
-                    <label for="subject_name" class="block text-sm font-sm text-neutral-700">Subject Name</label>
-                    <input type="text" name="subject_name" id="subject_name" required class="input-base">
-                </div>
-                <div class="space-y-2">
-                    <label for="program" class="block text-sm font-sm text-neutral-700">Program</label>
-                    <select id="program" name="program" class="input-base border-r-[12px] border-transparent">
-                        <option value="BSIT">Bachelor of Science in Information Technology</option>
-                    </select>
-                </div>
-                <div class="space-y-2">
-                    <label for="year" class="block text-sm font-sm text-neutral-700">Year</label>
-                    <select id="year_level" name="year_level" class="input-base border-r-[12px] border-transparent">
-                        <option value="1">1st year</option>
-                        <option value="2">2nd year</option>
-                        <option value="3">3rd year</option>
-                        <option value="4">4th year</option>
-                    </select>
+                <!-- Subject Selection with Autocomplete -->
+                <div 
+                    x-data='{
+                        query: "",
+                        subjects: @json($subjectsAdvisable->values()),
+                        filtered: [],
+                        show: false,
+                        readonly: false,
+                        select(subject) {
+                            this.query = subject.name + " (" + subject.code + ")";
+                            this.show = false;
+                            $refs.code.value = subject.code;
+                            $refs.name.value = subject.name;
+                        },
+                        search() {
+                            if (this.query.length === 0) {
+                                this.filtered = [];
+                                this.show = false;
+                                return;
+                            }
+                            this.filtered = this.subjects.filter(s =>
+                                s.name.toLowerCase().includes(this.query.toLowerCase()) ||
+                                s.code.toLowerCase().includes(this.query.toLowerCase())
+                            );
+                            this.show = this.filtered.length > 0;
+                        }
+                    }'
+                    class="space-y-2 relative">
+                    <label for="subject_search" class="block text-sm font-sm text-neutral-700">Search Subject</label>
+                    <input
+                        type="text"
+                        id="subject_search"
+                        x-model="query"
+                        :readonly="readonly"
+                        placeholder="Type subject name or code..."
+                        class="input-base"
+                        autocomplete="off"
+                        @input="search"
+                        @focus="search"
+                        @blur="setTimeout(() => show = false, 100)">
+                    <!-- Suggestions Dropdown -->
+                    <ul x-show="show" class="absolute z-10 bg-white border border-neutral-200 rounded shadow w-full mt-1 max-h-40 overflow-auto">
+                        <template x-for="subject in filtered" :key="subject.id">
+                            <li @mousedown.prevent="select(subject)"
+                                class="px-4 py-2 hover:bg-emerald-100 cursor-pointer text-sm">
+                                <span x-text="subject.name"></span>
+                                (<span x-text="subject.code"></span>)
+                            </li>
+                        </template>
+                    </ul>
+                    <!-- Hidden fields for form submission -->
+                    <input type="hidden" name="code" x-ref="code" id="subject-code">
+                    <input type="hidden" name="name" x-ref="name" id="subject-name">
                 </div>
                 <div class="space-y-2">
                     <label for="section_input" class="block text-sm font-sm text-neutral-700">Section</label>
-                    <input type="text" name="section" id="section_input" required class="input-base" placeholder="Enter section (A-E)">
+                    <input type="text" name="section" id="section_input" required class="input-base" placeholder="Enter section (A-E)" autocomplete="off">
                 </div>
-                <div class="space-y-2">
-                    <label for="description" class="block text-sm font-sm text-neutral-700">Description</label>
-                    <textarea name="description" id="description" rows="3" class="input-base"></textarea>
-                </div>
+
                 <p id="edit-subject-warning" class="block text-xs font-sm text-neutral-700 italic hidden">
-                    Changing the program, year, or section will update the students enrolled.</p>
+                    Changing the section will update the students enrolled.</p>
 
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeModal()"
@@ -94,12 +120,13 @@
 
     <!-- Subjects Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @forelse($subjects as $subject)
+        @forelse($subjectsAdvised as $subject)
         <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-200 flex flex-col">
             <div class="flex justify-between items-start mb-4">
                 <div class="space-y-1">
-                    <h3 class="text-lg font-semibold text-gray-800">{{ $subject->subject_name }}</h3>
-                    <p class="text-sm font-medium text-emerald-600">{{ $subject->subject_code }}</p>
+                    <h3 class="text-lg font-semibold text-gray-800">{{ $subject->name }}</h3>
+                    <p class="text-sm font-medium text-emerald-600">{{ $subject->code }}</p>
+                    <p class="text-sm text-gray-500">{{ $subject->program->abbreviation . " " . $subject->year_level . $subject->pivot->section }}</p>
                 </div>
 
                 <div class="flex space-x-1">
@@ -107,18 +134,14 @@
                         type="button"
                         class="btn-text rounded-full p-1.5 hover:bg-neutral-200/70 hover:shadow-sm focus:outline-none transition-colors"
                         onclick="editSubject(
-        '{{ $subject->id }}',
-        '{{ addslashes($subject->subject_code) }}',
-        '{{ addslashes($subject->subject_name) }}',
-        '{{ addslashes($subject->description) }}',
-        '{{ addslashes($subject->program) }}',
-        '{{ $subject->year_level }}',
-        '{{ addslashes($subject->section) }}'
-    )">
+                            '{{ addslashes($subject->code) }}',
+                            '{{ addslashes($subject->name) }}',
+                            '{{ addslashes($subject->pivot->section) }}'
+                        )">
                         <span class="material-symbols-rounded text-neutral-600">edit</span>
                     </button>
 
-                    <form action="{{ route('instructor.subjects.destroy', $subject) }}" method="POST" class="inline" id="delete-form">
+                    <form action="{{ route('instructor.subjects.advise.destroy', $subject) }}" method="POST" class="inline" id="delete-form">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -165,6 +188,8 @@
 
 @push('scripts')
 <script>
+    let alpineComponent = null;
+    
     function openModal() {
         document.getElementById('subject-modal').showModal();
     }
@@ -174,31 +199,48 @@
         document.getElementById('subject-modal').close();
         document.getElementById('success-message').classList.add('hidden');
 
+        setTimeout(() => {
+            const alpineComponent = document.getElementById('subject_search').closest('[x-data]');
+            if (alpineComponent && alpineComponent.__x) {
+                alpineComponent.__x.$data.query = "";
+                alpineComponent.__x.$data.readonly = false;
+            }
+            document.getElementById('subject_search').disabled = false;
+            document.getElementById('subject_search').classList.remove('bg-gray-100', 'cursor-not-allowed');
+        }, 100);
+
         // Reset modal to add mode
         document.getElementById('modal-title').textContent = 'Add New Subject';
         document.getElementById('modal-submit-btn').textContent = 'Create subject';
-        document.getElementById('subject-form').action = "{{ route('instructor.subjects.store') }}";
+        document.getElementById('subject-form').action = "{{ route('instructor.subjects.advise') }}";
         document.querySelector('#subject-form input[name=_method]')?.remove();
         document.getElementById('edit-subject-warning').classList.add('hidden');
     }
 
-    function editSubject(id, code, name, description, program, year, section) {
+    function editSubject(code, name, section) {
         openModal();
         document.getElementById('edit-subject-warning').classList.remove('hidden');
-
-        document.getElementById('modal-title').textContent = `Edit ${name}`;
+        document.getElementById('modal-title').textContent = `Edit Subject`;
         document.getElementById('modal-submit-btn').textContent = 'Update subject';
 
-        document.getElementById('subject_code').value = code;
-        document.getElementById('subject_name').value = name;
-        document.getElementById('description').value = description;
-        document.getElementById('program').value = program;
-        document.getElementById('year_level').value = year;
-        document.getElementById('section_input').value = section;
+        setTimeout(() => {
+            const alpineComponent = document.getElementById('subject_search').closest('[x-data]');
+            if (alpineComponent && alpineComponent.__x) {
+                alpineComponent.__x.$data.query = `${name} (${code})`;
+                alpineComponent.__x.$data.readonly = true;
+            }
+            document.getElementById('subject_search').value = `${name} (${code})`;
+            document.getElementById('subject_search').classList.add('bg-gray-100', 'cursor-not-allowed');
+            document.getElementById('subject_search').disabled = true;
+
+            document.getElementById('subject-code').value = code;
+            document.getElementById('subject-name').value = name;
+            document.getElementById('section_input').value = section;
+        }, 100); // <-- increase timeout to 100ms
 
         // Set form action to update route
         const form = document.getElementById('subject-form');
-        form.action = `/instructor/subjects/${id}/update`;
+        form.action = `/instructor/subjects/advise/update`;
         // Add hidden _method input for PUT
         if (!form.querySelector('input[name=_method]')) {
             const methodInput = document.createElement('input');
@@ -278,6 +320,8 @@
                 displayValidationErrors(errors);
             }
         });
+
+        alpineComponent = document.getElementById('subject_search').closest('[x-data]');
 
         // Delete subject
         document.querySelectorAll("#delete-form").forEach(form => {

@@ -20,6 +20,7 @@
 
     <!-- Alpine.js for dropdown -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
     @vite(['resources/css/app.css'])
     @stack('scripts')
     <title>@yield('title', 'QR Attendance')</title>

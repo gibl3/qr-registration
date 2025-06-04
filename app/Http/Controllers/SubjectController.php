@@ -18,10 +18,18 @@ class SubjectController extends Controller
         return view('admin.subject.index', compact('subjects', 'programs'));
     }
 
-    public function instructorIndex() {
-        $subjects = Subject::where('instructor_id', auth()->id())->get();
-        $instructor = Instructor::find(auth()->id());
-        return view('instructor.subjects.index', ['subjects' => $subjects, 'instructor' => $instructor]);
+    public function instructorIndex()
+    {
+        // find instructor by auth user id
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
+        $subjectsAdvised = $instructor->subjects()->with('program')->get();
+        
+        // get the only the subjects where the subject's program's department is the same as the instructor's department
+        $subjectsAdvisable = Subject::all()->filter(function ($subject) use ($instructor) {
+            return $subject->program->department_id === $instructor->department_id;
+        });
+
+        return view('instructor.subjects.index', compact('subjectsAdvised', 'instructor', 'subjectsAdvisable'));
     }
 
     public function store(Request $request)
@@ -51,6 +59,99 @@ class SubjectController extends Controller
         return response()->json([
             'message' => 'Subject added successfully.',
             'subject' => $subject
+        ], 200);
+    }
+
+    private function automaticEnrollStudents(Subject $subject)
+    {        
+        // Find students matching the subject's program, year_level, and section
+        $students = Student::where('program_id', $subject->program->id)
+            ->where('year_level', $subject->year_level)
+            ->where('section', $subject->section)
+            ->get();
+
+        // Attach each student to the subject (assuming many-to-many relationship)
+        foreach ($students as $student) {
+            $student->subjects()->syncWithoutDetaching([$subject->id]);
+        }
+    }
+
+    public function adviseSubject(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|exists:subjects,code',
+            'section' => 'required|in:A,B,C,D,E',
+        ]);
+        
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
+        if (!$instructor) {
+            return response()->json([
+                'message' => 'Unauthorized.',
+            ], 401);
+        }
+        
+        $subject = Subject::where('code', $request->input('code'))->first();
+        if (!$subject) {
+            return response()->json([
+                'message' => 'Subject not found.',
+            ], 404);
+        }
+
+        // insert into adubject_advised table
+        $instructor->subjects()->syncWithoutDetaching([$subject->id => ['section' => $request->input('section')]]);
+
+        $this->automaticEnrollStudents($subject);
+
+        return response()->json([
+            'message' => 'Subject advised successfully.',
+            'subject' => $subject,
+        ], 200);
+    }
+
+    public function updateAdvisedSubject(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|exists:subjects,code',
+            'section' => 'required|in:A,B,C,D,E',
+        ]);
+
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
+        if (!$instructor) {
+            return response()->json([
+                'message' => 'Unauthorized.',
+            ], 401);
+        }
+
+        $subject = Subject::where('code', $request->input('code'))->first();
+        if (!$subject) {
+            return response()->json([
+                'message' => 'Subject not found.',
+            ], 404);
+        }
+
+        // update the section in the pivot table
+        $instructor->subjects()->updateExistingPivot($subject->id, ['section' => $request->input('section')]);
+
+        return response()->json([
+            'message' => 'Advised subject updated successfully.',
+            'subject' => $subject,
+        ], 200);
+    }
+
+    public function destroyAdvisedSubject(Subject $subject)
+    {
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
+        if (!$instructor) {
+            return response()->json([
+                'message' => 'Unauthorized.',
+            ], 401);
+        }
+
+        // detach the subject from the instructor
+        $instructor->subjects()->detach($subject->id);
+
+        return response()->json([
+            'message' => 'Advised subject removed successfully.',
         ], 200);
     }
 
@@ -95,20 +196,6 @@ class SubjectController extends Controller
         $subject->delete();
         
         return $this->index();
-    }
-
-    private function automaticEnrollStudents(Subject $subject)
-    {
-        // Find students matching the subject's program, year_level, and section
-        $students = Student::where('program', $subject->program)
-            ->where('year_level', $subject->year_level)
-            ->where('section', $subject->section)
-            ->get();
-
-        // Attach each student to the subject (assuming many-to-many relationship)
-        foreach ($students as $student) {
-            $student->subjects()->syncWithoutDetaching([$subject->id]);
-        }
     }
 
     private function reenrollStudents(Subject $subject)

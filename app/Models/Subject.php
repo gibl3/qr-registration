@@ -22,9 +22,9 @@ class Subject extends Model
         return $this->belongsToMany(Student::class, "subject_student");
     }
 
-    public function instructor()
+    public function instructors()
     {
-        return $this->belongsTo(Instructor::class, 'instructor_id');
+        return $this->belongsToMany(Instructor::class, "subject_advised");;
     }
 
     public function program()

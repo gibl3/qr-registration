@@ -92,11 +92,13 @@ Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->g
             Route::get('/{subject}/show', [SubjectController::class, 'show'])->name('show');
             Route::get('/{subject}/students', [SubjectController::class, 'getStudents'])->name('students');
 
-            Route::post('/store', [SubjectController::class, 'store'])->name('store');
-
-            Route::delete('/{subject}', [SubjectController::class, 'destroy'])->name('destroy');
-
-            Route::put('/{subject}/update', [SubjectController::class, 'update'])->name('update');
+            Route::post('/advise', [SubjectController::class, 'adviseSubject'])->name('advise');
+            
+            // subject code in POST
+            Route::put('/advise/update', [SubjectController::class, 'updateAdvisedSubject'])
+                ->name('advise.update');
+            Route::delete('advise/{subject}/destroy', [SubjectController::class, 'destroyAdvisedSubject'])
+                ->name('advise.destroy');
 
             Route::post('/{subject}/enroll', [SubjectStudentController::class, 'enroll'])
                 ->name('enroll');
