@@ -86,19 +86,14 @@ class ScanController extends Controller
     {
         // from q GET argument
         $qrCode = $request->query('q');
-        $subjectCode = $request->query('s');
-
-        // add space before digits in $subjectCode
-        if ($subjectCode) {
-            $subjectCode = preg_replace('/(\d+)/', ' $1', $subjectCode);
-        }
-
         if (!$qrCode) {
             return $this->index();
         }
 
         $instructor = auth()->user();
-        $subjects = Subject::where('instructor_id', $instructor->id)->get();
+        $subjectsAdvised = Subject::whereHas('instructors', function ($query) use ($instructor) {
+            $query->where('instructor_id', $instructor->id);
+        })->get();
         
         $studentID = $qrCode;
         $student = Student::where('student_id', $studentID)->first();
@@ -106,16 +101,25 @@ class ScanController extends Controller
             return redirect()->route('instructor.scan.index')->withErrors(['message' => 'No student found with this ID.']);
         }
 
-        $enrolledSubjects = $student->subjects()->whereIn('subjects.id', $subjects->pluck('id'))->get();
-        if ($subjectCode) {
-            $enrolledSubjects = $enrolledSubjects->sortBy(function ($subject) use ($subjectCode) {
-                return $subject->subject_code === $subjectCode ? 1 : 0;
+        $enrolledSubjects = $student->subjects()->whereIn('subjects.id', $subjectsAdvised->pluck('id'))->get();
+        
+        // get the subject_id of the last attendance taken by the instructor
+        $subjectID = Attendance::where('student_id', $student->id)
+            ->whereHas('subject', function ($query) use ($instructor) {
+                $query->where('instructor_id', $instructor->id);
+            })
+            ->latest()
+            ->value('subject_id');
+        
+        if ($subjectID) {
+            $enrolledSubjects = $enrolledSubjects->sortBy(function ($subject) use ($subjectID) {
+                return $subject->id === $subjectID ? 1 : 0;
             });
         }
 
-        if ($enrolledSubjects->isEmpty()) {
-            return redirect()->route('instructor.scan.index')->withErrors(['message' => 'Student is not enrolled in any of your subjects.']);
-        }
+        // if ($enrolledSubjects->isEmpty()) {
+        //     return redirect()->route('instructor.scan.index')->withErrors(['message' => 'Student is not enrolled in any of your subjects.']);
+        // }
 
         return view('instructor.scans.other', [
             'qrCode' => $qrCode,
