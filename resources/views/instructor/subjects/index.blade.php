@@ -145,9 +145,9 @@
         <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-200 flex flex-col">
             <div class="flex justify-between items-start mb-4">
                 <div class="space-y-1">
-                    <h3 class="text-lg font-semibold text-gray-800">{{ $subject->name }}</h3>
-                    <p class="text-sm font-medium text-emerald-600">{{ $subject->code }}</p>
-                    <p class="text-sm text-gray-500">{{ $subject->program->abbreviation . " " . $subject->pivot->year_level . $subject->pivot->section }}</p>
+                    <h3 class="text-lg font-semibold text-gray-800">{{ $subject->subject->name }}</h3>
+                    <p class="text-sm font-medium text-emerald-600">{{ $subject->subject->code }}</p>
+                    <p class="text-sm text-gray-500">{{ $subject->program->abbreviation . " " . $subject->year_level . $subject->section }}</p>
                 </div>
 
                 <div class="flex space-x-1">
@@ -157,7 +157,7 @@
                         onclick="editSubject(
                             '{{ addslashes($subject->code) }}',
                             '{{ addslashes($subject->name) }}',
-                            '{{ addslashes($subject->pivot->section) }}'
+                            '{{ addslashes($subject->section) }}'
                         )">
                         <span class="material-symbols-rounded text-neutral-600">edit</span>
                     </button> --}}
@@ -178,7 +178,6 @@
                     <span class="material-symbols-rounded text-neutral-500 md-icon-20">group</span>
                     <span class="text-sm text-gray-500">{{ $subject->enrolled_count ?? 0 }} students</span>
                 </div>
-
                 <a href="{{ route('instructor.subjects.show', ['subject' => $subject]) }}"
                     class="btn-link text-neutral-600 group text-sm font-medium">
                     View students

@@ -63,4 +63,9 @@ class Student extends Model
             return $advised->subject; // assuming you have subject() in SubjectAdvised
         })->filter();
     }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
 }

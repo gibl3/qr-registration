@@ -11,7 +11,7 @@
                 <p class="text-2xl font-semibold">{{ $student->first_name }} {{ $student->last_name }}</p>
 
                 <div class="font-medium text-sm text-neutral-600">
-                    <p class="">{{ $student->program }} - Year {{ $student->year_level }}</p>
+                    <p class="">{{ $student->program->abbreviation }} - Year {{ $student->year_level }}</p>
                     <p id="student-id">{{ $student->student_id }}</p>
                     <p>{{ $student->email_address }}</p>
                 </div>

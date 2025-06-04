@@ -51,30 +51,29 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             <input type="checkbox" id="select-all" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                         </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year Level</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Section</th>
                     </tr>
                 </thead>
-
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($students as $student)
+                    @forelse($students as $student)                    
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <input type="checkbox" name="student_ids[]" value="{{ $student->id }}" class="student-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">{{ $student->student_id ?? 'N/A' }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $student->first_name }} {{ $student->last_name }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ $student->program }}</div>
+                            <div class="text-sm text-gray-500">{{ $student->program->abbreviation }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ $student->year_level }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ $student->student_id ?? 'N/A' }}</div>
+                            <div class="text-sm text-gray-500">{{ $student->year_level  . $student->section }}</div>
                         </td>
                     </tr>
                     @empty
@@ -111,10 +110,10 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <input type="checkbox" id="select-all-enrolled" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year Level</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Section</th>
                         </tr>
                     </thead>
 
@@ -125,16 +124,16 @@
                                 <input type="checkbox" name="enrolled_student_ids[]" value="{{ $enrolledStudent->id }}" class="enrolled-student-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500">{{ $enrolledStudent->student_id ?? 'N/A' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $enrolledStudent->first_name }} {{ $enrolledStudent->last_name }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500">{{ $enrolledStudent->program }}</div>
+                                <div class="text-sm text-gray-500">{{ $enrolledStudent->program->abbreviation }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500">{{ $enrolledStudent->year_level }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500">{{ $enrolledStudent->student_id ?? 'N/A' }}</div>
+                                <div class="text-sm text-gray-500">{{ $enrolledStudent->year_level . $enrolledStudent->section }}</div>
                             </td>
                         </tr>
                         @empty

@@ -35,6 +35,6 @@ class SubjectAdvised extends Model
     
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'subject_student', 'subject_advised_id', 'student_id');
+        return $this->belongsToMany(Student::class, 'subject_student', 'subject_advised_id', 'student_id')->with('program');
     }
 }

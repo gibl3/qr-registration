@@ -23,16 +23,14 @@ class SubjectController extends Controller
     public function instructorIndex()
     {
         $instructor = Instructor::where('email', auth()->user()->email)->first();
-        $subjectsAdvised = $instructor->subjects()->get();
+        $subjectsAdvised = $instructor->subjects()->with('subject')->get();
         $programs = Program::where('department_id', $instructor->department_id)->get();
 
         // For each subject, get the count of enrolled students for this instructor's advised subject
         foreach ($subjectsAdvised as $subject) {
-            $subject->enrolled_count = \App\Models\SubjectAdvised::where('subject_id', $subject->id)
-                ->where('instructor_id', $instructor->id)
-                ->withCount('students')
-                ->first()
-                ?->students_count ?? 0;
+            $subject->enrolled_count = DB::table('subject_student')
+                ->where('subject_advised_id', $subject->id)
+                ->count('student_id');
         }
 
         // get the only the subjects where the subject's department_id matches the instructor's department_id OR the subject's department_id is null
@@ -238,12 +236,12 @@ class SubjectController extends Controller
         // $this->automaticEnrollStudents($subject);
     }
 
-    public function show(Subject $subject)
+    public function show(SubjectAdvised $subject)
     {
-        // Get all students that are not yet enrolled in this subject
-        $students = Student::whereDoesntHave('subjects', function ($query) use ($subject) {
-            $query->where('subjects.id', $subject->id);
-        })->get();
+        // Get students NOT enrolled in this subject_advised
+        $students = \App\Models\Student::whereDoesntHave('subjects', function ($query) use ($subject) {
+            $query->where('subject_advised_id', $subject->id);
+        })->with('program')->get();
 
         return view('instructor.subjects.show', compact('subject', 'students'));
     }
