@@ -5,29 +5,56 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Attendance;
+use App\Models\Instructor;
 use App\Models\Subject;
+use App\Models\SubjectAdvised;
 
 class ScanController extends Controller
 {
     public function index()
     {
-        $instructor = auth()->user();
-        $subjects = Subject::where('instructor_id', $instructor->id)->get();
-        return view('instructor.scans.index', compact('subjects'));
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
+
+        // Get all SubjectAdvised records for this instructor, eager loading the related Subject
+        $subjectsAdvised = SubjectAdvised::with('subject')
+            ->where('instructor_id', $instructor->id)
+            ->get();
+
+        return view('instructor.scans.index', [
+            'subjects' => $subjectsAdvised
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'student_id' => 'required|string',
-            'subject_id' => 'required|exists:subjects,id'
+        'student_id' => 'required|string',
+        'subject_id' => 'required|exists:subjects,id'
         ]);
 
         try {
             $student = Student::where('student_id', $request->student_id)->firstOrFail();
 
-            // Check if student is enrolled in the subject
-            $isEnrolled = $student->subjects()->where('subjects.id', $request->subject_id)->exists();
+            // Get the current instructor
+            $instructor = Instructor::where('email', auth()->user()->email)->first();
+
+            // Find the subject_advised record for this subject and any instructor
+            $subjectAdvised = SubjectAdvised::where('subject_id', $request->subject_id)
+                ->where('instructor_id', $instructor->id)
+                ->orderByRaw(
+                    '(program_id = ? AND year_level = ? AND section = ?) DESC',
+                    [$student->program_id, $student->year_level, $student->section]
+                )
+                ->first();
+
+            if (!$subjectAdvised) {
+                return response()->json([
+                    'message' => 'Subject not found.',
+                ], 404);
+            }
+
+            // Check if the student is enrolled in this subject_advised
+            $isEnrolled = $subjectAdvised->students()->where('students.id', $student->id)->exists();
 
             if (!$isEnrolled) {
                 return response()->json([
@@ -35,23 +62,25 @@ class ScanController extends Controller
                 ], 403);
             }
 
-            // Check if an attendance record already exists for today in this subject
+            // Check if an attendance record already exists for today in this subject_advised
             $attendance = Attendance::where('student_id', $student->id)
-                ->where('subject_id', $request->subject_id)
+                ->where('subject_advised_id', $subjectAdvised->id)
                 ->whereDate('date', now()->toDateString())
                 ->first();
 
             if ($attendance) {
-                $subjectCode = $attendance->subject->subject_code ?? '';
+                $subjectCode = $subjectAdvised->subject->subject_code ?? '';
                 return response()->json([
                     'message' => "Attendance already recorded for the subject $subjectCode today.",
-                    'student' => $student->only(['first_name', 'last_name', 'program', 'year_level']),
+                    'student' => $student->only(['first_name', 'last_name', 'program_id', 'year_level']),
                 ], 409);
             }
 
+            // Record attendance
             $attendance = Attendance::create([
                 'student_id' => $student->id,
-                'subject_id' => $request->subject_id,
+                'subject_advised_id' => $subjectAdvised->id,
+                'instructor_id' => $instructor->id,
                 'first_name' => $student->first_name,
                 'last_name' => $student->last_name,
                 'date' => now()->toDateString(),
@@ -59,17 +88,6 @@ class ScanController extends Controller
                 'status' => 'present',
             ]);
 
-            return response()->json([
-                'message' => 'Attendance recorded successfully.',
-                'attendance' => [
-                    'first_name' => $attendance->first_name,
-                    'last_name' => $attendance->last_name,
-                    'date' => $attendance->date,
-                    'time_in' => $attendance->time_in,
-                    'status' => $attendance->status,
-                    'subject_code' => $attendance->subject->subject_code,
-                ],
-            ], 201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'No student found.',
@@ -80,6 +98,18 @@ class ScanController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+
+        return response()->json([
+            'message' => 'Attendance recorded successfully.',
+            'attendance' => [
+                'first_name' => $attendance->first_name,
+                'last_name' => $attendance->last_name,
+                'date' => $attendance->date,
+                'time_in' => $attendance->time_in,
+                'status' => $attendance->status,
+                'subject_code' => $subjectAdvised->subject->subject_code ?? '',
+            ],
+        ], 201);
     }
 
     public function thirdPartyIndex(Request $request)

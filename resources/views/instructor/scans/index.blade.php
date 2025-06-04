@@ -28,7 +28,7 @@
                             <select id="subject-select" class="input-base border-r-[12px] border-transparent w-full sm:w-fit">
                                 <option value="">Select a subject...</option>
                                 @foreach($subjects as $subject)
-                                <option value="{{ $subject->id }}">{{ $subject->subject_name }} ({{ $subject->subject_code }})</option>
+                                <option value="{{ $subject->subject->id }}">{{ $subject->subject->name }} ({{ $subject->subject->code }})</option>
                                 @endforeach
                             </select>
                         </div>
