@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Instructor;
 use App\Models\Subject;
 use App\Models\Student;
 use App\Models\SubjectAdvised;
@@ -14,24 +15,26 @@ class AttendanceController extends Controller
 
     public function index()
     {
-        $instructorID = Auth::id();
-        
-        $attendances = Attendance::with(['subjectAdvised.subject', 'student'])
-            ->whereHas('subjectAdvised', function ($query) use ($instructorID) {
-                $query->whereHas('subject', function ($subQuery) use ($instructorID) {
-                    $subQuery->where('instructor_id', $instructorID);
-                });
-            })
-            ->orderBy('date', 'desc')
-            ->orderBy('time_in', 'desc')
-            ->get();
+        $instructorID = Instructor::where('email', Auth::user()->email)->first()->id;
 
-        $subjects = SubjectAdvised::where('instructor_id', Auth::id())->get();
+        $attendances = Attendance::with(['subjectAdvised.subject', 'student'])
+    ->whereHas('subjectAdvised', function ($query) use ($instructorID) {
+        $query->where('instructor_id', $instructorID);
+    })
+    ->orderBy('date', 'desc')
+    ->orderBy('time_in', 'desc')
+    ->get();
+
+        $subjects = SubjectAdvised::where('instructor_id', $instructorID)->get();
+        
         // if ($attendances->isEmpty()) {
         //     return view('instructor.attendance.index', compact('subjects'));
         // }
 
-        return view('instructor.attendance.index', compact('attendances', 'subjects'));
+        return view('instructor.attendance.index', [
+            'attendances' => $attendances,
+            'subjects' => $subjects
+        ]);
     }
 
     public function edit(Attendance $attendance)

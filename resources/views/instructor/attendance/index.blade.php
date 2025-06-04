@@ -26,7 +26,7 @@
             <select id="subject-filter" class="min-w-[200px] rounded-full border-neutral-300 text-sm bg-neutral-200/50 py-1.5 px-3">
                 <option value="">All Subjects</option>
                 @foreach ($subjects as $subject)
-                <option value="{{ $subject->id }}">{{ $subject->subject_code }}</option>
+                <option value="{{ $subject->subject->id }}">{{ $subject->subject->code }}</option>
                 @endforeach
             </select>
 
@@ -96,7 +96,9 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200" id="attendance-table-body">
                     @foreach ($attendances as $attendance)
-                    <tr class="hover:bg-gray-50" data-date="{{ $attendance->date }}" data-subject="{{ $attendance->subject->id ?? '' }}">
+                    <?php echo "<script>console.log(" . json_encode($attendance) . ")</script>"; ?>
+                    <?php echo "<script>console.log(" . json_encode($attendance->subjectAdvised[0]->subject) . ")</script>"; ?>
+                    <tr class="hover:bg-gray-50" data-date="{{ $attendance->date }}" data-subject="{{ $attendance->subjectAdvised[0]->subject->id ?? '' }}">
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-500">
                                 {{ $attendance->student->student_id }}
@@ -123,7 +125,7 @@
                             </div>
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ $attendance->subject->subject_name ?? 'N/A' }}</div>
+                            <div class="text-sm text-gray-500">{{ $attendance->subjectAdvised[0]->subject->code ?? 'N/A' }}</div>
                         </td>
                     </tr>
                     @endforeach
