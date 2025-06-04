@@ -13,22 +13,21 @@ class Subject extends Model
         'admin_id',
         'code',
         'name',
-        'program_id',
-        'year_level',
+        'department_id',        
     ];
-
-    public function students()
-    {
-        return $this->belongsToMany(Student::class, "subject_student");
-    }
 
     public function instructors()
     {
         return $this->belongsToMany(Instructor::class, "subject_advised");;
     }
 
-    public function program()
+    public function department()
     {
-        return $this->belongsTo(Program::class);
+        return $this->belongsTo(Department::class);
+    }
+    
+    public function getProgramAttribute()
+    {
+        return \App\Models\Program::find($this->pivot->program_id ?? null);
     }
 }

@@ -19,6 +19,10 @@ return new class extends Migration
             $table->foreignId('instructor_id')
                 ->constrained('instructors')
                 ->onDelete('cascade');
+            $table->foreignId('program_id')
+                ->constrained('programs')
+                ->onDelete('cascade');
+            $table->integer('year_level');
             $table->enum('section', ['A', 'B', 'C', 'D', 'E'])
                 ->default('A');
             $table->timestamps();

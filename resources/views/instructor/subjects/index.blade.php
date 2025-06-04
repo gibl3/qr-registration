@@ -97,6 +97,27 @@
                     <input type="hidden" name="name" x-ref="name" id="subject-name">
                 </div>
                 <div class="space-y-2">
+                    <label for="program_input" class="block text-sm font-sm text-neutral-700">Program</label>
+                    <div class="input-base p-0">
+                        <select id="program_input" name="program_id" class="input-base border-r-[12px] border-transparent text-sm sm:text-base">
+                            @foreach($programs as $program)
+                            <option value="{{ $program->id }}">{{ $program->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label for="year_input" class="block text-sm font-sm text-neutral-700">Year Level</label>
+                    <div class="input-base p-0">
+                        <select id="year_input" name="year_level" class="input-base border-r-[12px] border-transparent text-sm sm:text-base">
+                            <option value="1">1st year</option>
+                            <option value="2">2nd year</option>
+                            <option value="3">3rd year</option>
+                            <option value="4">4th year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-2">
                     <label for="section_input" class="block text-sm font-sm text-neutral-700">Section</label>
                     <input type="text" name="section" id="section_input" required class="input-base" placeholder="Enter section (A-E)" autocomplete="off">
                 </div>
@@ -157,7 +178,7 @@
             <div class="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                 <div class="flex items-center space-x-2">
                     <span class="material-symbols-rounded text-neutral-500 md-icon-20">group</span>
-                    <span class="text-sm text-gray-500">{{ $subject->students->count() ?? 0 }} students</span>
+                    {{-- <span class="text-sm text-gray-500">{{ $subject->students->count() ?? 0 }} students</span> --}}
                 </div>
 
                 <a href="{{ route('instructor.subjects.show', ['subject' => $subject]) }}"

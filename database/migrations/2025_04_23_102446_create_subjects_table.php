@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
-            $table->foreignId('program_id')
-                ->constrained('programs')
+            $table->foreignId('department_id')
+                ->nullable() // for general subjects
+                ->constrained('departments')
                 ->onDelete('cascade');
-            $table->integer('year_level');
             $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

@@ -21,8 +21,7 @@
                     <tr>
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Code</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Program</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Year</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Department</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Action</th>
                     </tr>
                 </thead>
@@ -36,17 +35,13 @@
                             <div class="text-gray-900">{{ $subject->name }}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-gray-900">{{ $subject->program->abbreviation ?? '-' }}</div>
-                        </td>
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-gray-900">{{ $subject->year_level }}</div>
+                            <div class="text-gray-900">{{ $subject->department->name ?? 'NONE' }}</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap font-medium flex gap-2">
                             <button class="text-blue-600 hover:text-blue-900" onclick="openEditModal({{ $subject->id }}, 
                                 '{{ addslashes($subject->code) }}', 
                                 '{{ addslashes($subject->name) }}', 
-                                '{{ $subject->program_id }}', 
-                                '{{ $subject->year_level }}')">Edit</button>
+                                '{{ $subject->department_id }}')">Edit</button>
                             <form action="{{ route('admin.subject.destroy', $subject) }}" method="post" class="inline" onsubmit="return confirm('Delete this subject?')">
                                 @csrf
                                 @method('DELETE')
@@ -80,20 +75,12 @@
                 <input type="text" name="name" class="input-base w-full" required autocomplete="off">
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Program</label>
-                <select name="program_id" class="input-base w-full" required>
-                    @foreach($programs as $program)
-                        <option value="{{ $program->id }}">{{ $program->name }}</option>
+                <label class="block text-sm font-medium mb-1">Department</label>
+                <select id="department-select-add" name="department_id" class="input-base w-full">
+                    @foreach($departments as $department)
+                        <option value="{{ $department->id }}">{{ $department->name }}</option>
                     @endforeach
-                </select>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Year</label>
-                <select name="year_level" id="add-sub-year" class="input-base w-full" required>
-                    <option value="1">1st Year</option>
-                    <option value="2">2nd Year</option>
-                    <option value="3">3rd Year</option>
-                    <option value="4">4th Year</option>
+                    <option value="">NONE</option>
                 </select>
             </div>
             <div class="flex justify-end gap-2">
@@ -120,20 +107,12 @@
                 <input type="text" name="name" id="edit-name" class="input-base w-full" required autocomplete="off">
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Program</label>
-                <select name="program_id" id="edit-program" class="input-base w-full" required>
-                    @foreach($programs as $program)
-                        <option value="{{ $program->id }}">{{ $program->name }}</option>
+                <label class="block text-sm font-medium mb-1">Department</label>
+                <select name="department_id" id="edit-department" class="input-base w-full">
+                    @foreach($departments as $department)
+                        <option value="{{ $department->id }}">{{ $department->name }}</option>
                     @endforeach
-                </select>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Year</label>
-                <select name="year_level" id="edit-year" class="input-base w-full" required>
-                    <option value="1">1st Year</option>
-                    <option value="2">2nd Year</option>
-                    <option value="3">3rd Year</option>
-                    <option value="4">4th Year</option>
+                    <option value="">NONE</option>
                 </select>
             </div>
             <div class="flex justify-end gap-2">
@@ -152,12 +131,11 @@
     function closeAddModal() {
         document.getElementById('add-modal').classList.add('hidden');
     }
-    function openEditModal(id, code, name, programId, year) {
+    function openEditModal(id, code, name, departmentId) {
         document.getElementById('edit-modal').classList.remove('hidden');
         document.getElementById('edit-code').value = code;
         document.getElementById('edit-name').value = name;
-        document.getElementById('edit-program').value = programId;
-        document.getElementById('edit-year').value = year;
+        document.getElementById('edit-department').value = departmentId;
         document.getElementById('edit-form').action = `/admin/subject/${id}/update`;
     }
     function closeEditModal() {
@@ -211,6 +189,7 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("add-modal-btn").addEventListener("click", openAddModal);
+
         document.getElementById("store-subject-form").addEventListener("submit", storeSubject);
         document.getElementById("edit-form").addEventListener("submit", updateSubject);
     });

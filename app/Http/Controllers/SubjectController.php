@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Student;
 use App\Models\Subject;
+use App\Models\SubjectAdvised;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,38 +15,44 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        $subjects = Subject::with('program')->get();
-        $programs = Program::all();
-        return view('admin.subject.index', compact('subjects', 'programs'));
+        $subjects = Subject::with('department')->get();
+        $departments = Department::all();
+        return view('admin.subject.index', compact('subjects', 'departments'));
     }
 
     public function instructorIndex()
     {
         // find instructor by auth user id
         $instructor = Instructor::where('email', auth()->user()->email)->first();
-        $subjectsAdvised = $instructor->subjects()->with('program')->get();
+        $subjectsAdvised = $instructor->subjects()->get();
+
+        $programs = Program::where('department_id', $instructor->department_id)->get();
         
-        // get the only the subjects where the subject's program's department is the same as the instructor's department
+        // get the only the subjects where the subject's department_id matches the instructor's department_id OR the subject's department_id is null
         $subjectsAdvisable = Subject::all()->filter(function ($subject) use ($instructor) {
-            return $subject->program->department_id === $instructor->department_id;
+            return $subject->department_id === $instructor->department_id || is_null($subject->department_id);
         });
 
-        return view('instructor.subjects.index', compact('subjectsAdvised', 'instructor', 'subjectsAdvisable'));
+        return view('instructor.subjects.index', compact('subjectsAdvised', 'instructor', 'subjectsAdvisable', 'programs'));
     }
 
     public function store(Request $request)
     {
         $subject = null;
         try {
-            $data = $request->validate([
+            $request->validate([
                 'code' => 'required|string|max:255',
                 'name' => 'required|string|max:255',
-                'program_id' => 'required|exists:programs,id',
-                'year_level' => 'required|integer|min:1|max:4',
             ]);
-            $data['admin_id'] = auth()->id();
 
-            $subject = Subject::create($data);
+            $request['admin_id'] = auth()->id();
+
+            $subject = Subject::create($request->only([
+                'code', 
+                'name', 
+                'department_id',
+                'admin_id',
+            ]));
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'errors' => $e->errors()
@@ -62,7 +70,7 @@ class SubjectController extends Controller
         ], 200);
     }
 
-    private function automaticEnrollStudents(Subject $subject)
+    private function automaticEnrollStudents(SubjectAdvised $subject)
     {        
         // Find students matching the subject's program, year_level, and section
         $students = Student::where('program_id', $subject->program->id)
@@ -80,6 +88,8 @@ class SubjectController extends Controller
     {
         $request->validate([
             'code' => 'required|exists:subjects,code',
+            'program_id' => 'required|exists:programs,id',
+            'year_level' => 'required|integer|min:1|max:4',
             'section' => 'required|in:A,B,C,D,E',
         ]);
         
@@ -97,10 +107,15 @@ class SubjectController extends Controller
             ], 404);
         }
 
-        // insert into adubject_advised table
-        $instructor->subjects()->syncWithoutDetaching([$subject->id => ['section' => $request->input('section')]]);
+        $subjectAdvised = SubjectAdvised::create([
+            'subject_id' => $subject->id,
+            'instructor_id' => $instructor->id,
+            'program_id' => $request->input('program_id'),
+            'year_level' => $request->input('year_level'),
+            'section' => $request->input('section'),
+        ]);
 
-        $this->automaticEnrollStudents($subject);
+        $this->automaticEnrollStudents($subjectAdvised);
 
         return response()->json([
             'message' => 'Subject advised successfully.',
@@ -158,18 +173,20 @@ class SubjectController extends Controller
     public function update(Request $request, Subject $subject)
     {
         try {
-            $data = $request->validate([
+            $request->validate([
                 'code' => 'required|string|max:255',
                 'name' => 'required|string|max:255',
-                'program_id' => 'required|exists:programs,id',
-                'year_level' => 'required|integer|min:1|max:4',
             ]);
 
             // $didProgramYearSectionChanged = $subject->program !== $request->input('program') ||
             //     $subject->year_level !== $request->input('year_level') ||
             //     $subject->section !== $request->input('section');
 
-            $subject->update($data);
+            $subject->update($request->only([
+                'code', 
+                'name', 
+                'department_id',
+            ]));
 
             // if ($didProgramYearSectionChanged) {
             //     $this->reenrollStudents($subject);
@@ -195,7 +212,7 @@ class SubjectController extends Controller
     {
         $subject->delete();
         
-        return $this->index();
+        return redirect()->route('admin.subject.index');
     }
 
     private function reenrollStudents(Subject $subject)
@@ -205,7 +222,7 @@ class SubjectController extends Controller
             ->where('subject_id', $subject->id)
             ->delete();
 
-        $this->automaticEnrollStudents($subject);
+        // $this->automaticEnrollStudents($subject);
     }
 
     public function show(Subject $subject)

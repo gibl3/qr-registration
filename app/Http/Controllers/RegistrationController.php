@@ -22,6 +22,18 @@ class RegistrationController extends Controller
         return view('student.registration.show', compact('student', 'qrCodeUrl'));
     }
 
+    private function automaticEnrollStudent(Student $student)
+    {
+        // Automatically enroll the student in all subjects for their program and year level
+        $subjects = $student->program->subjects()
+            ->where('year_level', $student->year_level)
+            ->get();
+
+        foreach ($subjects as $subject) {
+            $student->subjects()->attach($subject->id);
+        }
+    }
+
     public function store(Request $request)
     {
         try {
@@ -56,6 +68,11 @@ class RegistrationController extends Controller
             return response()->json([
                 'errors' => $e->errors(),
             ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while registering the student.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 }

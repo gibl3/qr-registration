@@ -31,11 +31,6 @@ class Student extends Model
         $this->attributes['last_name'] = ucfirst(strtolower($value));
     }
 
-    public function subjects()
-    {
-        return $this->belongsToMany(Subject::class, 'subject_student');
-    }
-
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
@@ -54,5 +49,18 @@ class Student extends Model
             'password' => Hash::make($password),
             'role' => 'student'
         ]);
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(SubjectAdvised::class, 'subject_student', 'student_id', 'subject_advised_id')
+            ->withTimestamps();
+    }
+
+    public function realSubjects(): Subject
+    {
+        return $this->subjects->map(function($advised) {
+            return $advised->subject; // assuming you have subject() in SubjectAdvised
+        })->filter();
     }
 }
