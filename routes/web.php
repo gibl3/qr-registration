@@ -95,8 +95,9 @@ Route::prefix('instructor')->name('instructor.')->middleware('is_instructor')->g
             Route::post('/advise', [SubjectController::class, 'adviseSubject'])->name('advise');
             
             // subject code in POST
-            Route::put('/advise/update', [SubjectController::class, 'updateAdvisedSubject'])
-                ->name('advise.update');
+            // Dili asay
+            // Route::put('/advise/update', [SubjectController::class, 'updateAdvisedSubject'])
+            //     ->name('advise.update');
             Route::delete('advise/{subject}/destroy', [SubjectController::class, 'destroyAdvisedSubject'])
                 ->name('advise.destroy');
 

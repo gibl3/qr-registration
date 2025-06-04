@@ -127,6 +127,8 @@ class SubjectController extends Controller
     {
         $request->validate([
             'code' => 'required|exists:subjects,code',
+            'program_id' => 'required|exists:programs,id',
+            'year_level' => 'required|integer|min:1|max:4',
             'section' => 'required|in:A,B,C,D,E',
         ]);
 
@@ -137,7 +139,11 @@ class SubjectController extends Controller
             ], 401);
         }
 
-        $subject = Subject::where('code', $request->input('code'))->first();
+        $subject = SubjectAdvised::where('subject_id', function ($query) use ($request) {
+            $query->select('id')
+                ->from('subjects')
+                ->where('code', $request->input('code'));
+        });
         if (!$subject) {
             return response()->json([
                 'message' => 'Subject not found.',

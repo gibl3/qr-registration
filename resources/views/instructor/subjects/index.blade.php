@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="flex space-x-1">
-                    <button
+                    {{-- <button
                         type="button"
                         class="btn-text rounded-full p-1.5 hover:bg-neutral-200/70 hover:shadow-sm focus:outline-none transition-colors"
                         onclick="editSubject(
@@ -160,7 +160,7 @@
                             '{{ addslashes($subject->pivot->section) }}'
                         )">
                         <span class="material-symbols-rounded text-neutral-600">edit</span>
-                    </button>
+                    </button> --}}
 
                     <form action="{{ route('instructor.subjects.advise.destroy', $subject) }}" method="POST" class="inline" id="delete-form">
                         @csrf
