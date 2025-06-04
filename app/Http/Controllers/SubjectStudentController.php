@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Subject;
+use App\Models\SubjectAdvised;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SubjectStudentController extends Controller
 {
-    public function enroll(Request $request, Subject $subject)
+    public function enroll(Request $request, SubjectAdvised $subject)
     {
         try {
             $request->validate([
@@ -32,8 +32,6 @@ class SubjectStudentController extends Controller
                 $subject->students()->syncWithoutDetaching($studentIds);
 
                 DB::commit();
-
-                return redirect()->back()->with('success', 'Selected students enrolled successfully!');
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('Enrollment failed: ' . $e->getMessage());
@@ -43,9 +41,11 @@ class SubjectStudentController extends Controller
             Log::error('Enrollment validation failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Invalid student data. Please try again.');
         }
+
+        return redirect()->back()->with('success', 'Selected students enrolled successfully!');
     }
 
-    public function unenroll(Request $request, Subject $subject)
+    public function unenroll(Request $request, SubjectAdvised $subject)
     {
         try {
             $request->validate([
@@ -67,8 +67,6 @@ class SubjectStudentController extends Controller
                 $subject->students()->detach($studentIds);
 
                 DB::commit();
-
-                return redirect()->back()->with('success', 'Selected students unenrolled successfully!');
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('Unenrollment failed: ' . $e->getMessage());
@@ -78,5 +76,7 @@ class SubjectStudentController extends Controller
             Log::error('Unenrollment validation failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Invalid student data. Please try again.');
         }
+
+        return redirect()->back()->with('success', 'Selected students unenrolled successfully!');
     }
 }
