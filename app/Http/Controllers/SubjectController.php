@@ -22,12 +22,19 @@ class SubjectController extends Controller
 
     public function instructorIndex()
     {
-        // find instructor by auth user id
         $instructor = Instructor::where('email', auth()->user()->email)->first();
         $subjectsAdvised = $instructor->subjects()->get();
-
         $programs = Program::where('department_id', $instructor->department_id)->get();
-        
+
+        // For each subject, get the count of enrolled students for this instructor's advised subject
+        foreach ($subjectsAdvised as $subject) {
+            $subject->enrolled_count = \App\Models\SubjectAdvised::where('subject_id', $subject->id)
+                ->where('instructor_id', $instructor->id)
+                ->withCount('students')
+                ->first()
+                ?->students_count ?? 0;
+        }
+
         // get the only the subjects where the subject's department_id matches the instructor's department_id OR the subject's department_id is null
         $subjectsAdvisable = Subject::all()->filter(function ($subject) use ($instructor) {
             return $subject->department_id === $instructor->department_id || is_null($subject->department_id);

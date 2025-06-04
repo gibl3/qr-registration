@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function displayValidationErrors(errors) {
+        console.log(errors)
         if (errors) {
             // Display validation errors
             for (const [field, messages] of Object.entries(errors)) {

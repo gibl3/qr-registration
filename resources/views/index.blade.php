@@ -72,8 +72,10 @@
                     <div class="space-y-1.5 sm:space-y-2">
                         <label for="program" class="text-sm font-medium text-neutral-700">Program</label>
                         <div class="input-base p-0">
-                            <select id="program" name="program" class="input-base border-r-[12px] border-transparent text-sm sm:text-base">
-                                <option value="BSIT">Bachelor of Science in Information Technology</option>
+                            <select id="program" name="program_id" class="input-base border-r-[12px] border-transparent text-sm sm:text-base">
+                                @foreach ($programs as $program)
+                                    <option value="{{ $program->id }}">{{ $program->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

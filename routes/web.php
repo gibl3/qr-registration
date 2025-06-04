@@ -26,7 +26,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 
 // Public Routes
-Route::get('/', fn() => view('index'))->name('index');
+Route::get('/', [RegistrationController::class, 'index'])->name('index');
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::get('/login/admin', [AuthController::class, 'adminLogin'])->name('admin.login');

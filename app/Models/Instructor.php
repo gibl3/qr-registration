@@ -17,7 +17,7 @@ class Instructor extends Model
     ];
 
     public function subjects()
-    {
+    {        
         return $this->belongsToMany(Subject::class, 'subject_advised')
             ->withPivot(['program_id', 'year_level', 'section'])
             ->withTimestamps();

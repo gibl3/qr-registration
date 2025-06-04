@@ -147,7 +147,7 @@
                 <div class="space-y-1">
                     <h3 class="text-lg font-semibold text-gray-800">{{ $subject->name }}</h3>
                     <p class="text-sm font-medium text-emerald-600">{{ $subject->code }}</p>
-                    <p class="text-sm text-gray-500">{{ $subject->program->abbreviation . " " . $subject->year_level . $subject->pivot->section }}</p>
+                    <p class="text-sm text-gray-500">{{ $subject->program->abbreviation . " " . $subject->pivot->year_level . $subject->pivot->section }}</p>
                 </div>
 
                 <div class="flex space-x-1">
@@ -173,12 +173,10 @@
                 </div>
             </div>
 
-            <p class="text-gray-600 text-sm line-clamp-2 mb-4">{{ $subject->description }}</p>
-
             <div class="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                 <div class="flex items-center space-x-2">
                     <span class="material-symbols-rounded text-neutral-500 md-icon-20">group</span>
-                    {{-- <span class="text-sm text-gray-500">{{ $subject->students->count() ?? 0 }} students</span> --}}
+                    <span class="text-sm text-gray-500">{{ $subject->enrolled_count ?? 0 }} students</span>
                 </div>
 
                 <a href="{{ route('instructor.subjects.show', ['subject' => $subject]) }}"
