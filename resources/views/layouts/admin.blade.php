@@ -53,15 +53,15 @@
                     <span class="font-medium">Dashboard</span>
                 </a>
                 <a href="{{ route('admin.department.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('department-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                    <span class="material-symbols-rounded text-emerald-600">business</span>
                     <span class="font-medium">Departments</span>
                 </a>
                 <a href="{{ route('admin.program.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('program-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                    <span class="material-symbols-rounded text-emerald-600">school</span>
                     <span class="font-medium">Programs</span>
                 </a>
                 <a href="{{ route('admin.subject.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('subject-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                    <span class="material-symbols-rounded text-emerald-600">menu_book</span>
                     <span class="font-medium">Subjects</span>
                 </a>
                 <a href="{{ route('admin.instructor.create') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('instructor-bg', '')">
@@ -69,7 +69,7 @@
                     <span class="font-medium">Add Instructors</span>
                 </a>
                 <a href="{{ route('admin.instructor.showTable') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('view-instructor-bg', '')">
-                    <span class="material-symbols-rounded text-emerald-600">badge</span>
+                    <span class="material-symbols-rounded text-emerald-600">groups</span>
                     <span class="font-medium">View Instructors</span>
                 </a>
             </div>
@@ -92,11 +92,11 @@
                         <span class="font-medium">Dashboard</span>
                     </a>
                     <a href="{{ route('admin.instructor.create') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('department-bg', '')">
-                        <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                        <span class="material-symbols-rounded text-emerald-600">business</span>
                         <span class="font-medium">Departments</span>
                     </a>
                     <a href="{{ route('admin.program.index') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('program-bg', '')">
-                        <span class="material-symbols-rounded text-emerald-600">dashboard</span>
+                        <span class="material-symbols-rounded text-emerald-600">school</span>
                         <span class="font-medium">Programs</span>
                     </a>
                     <a href="{{ route('admin.instructor.create') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('instructor-bg', '')">
@@ -104,7 +104,7 @@
                         <span class="font-medium">Add Instructors</span>
                     </a>
                     <a href="{{ route('admin.instructor.showTable') }}" class="flex items-center space-x-3 p-3 hover:bg-neutral-100 rounded-lg transition-colors @yield('view-instructor-bg', '')">
-                        <span class="material-symbols-rounded text-emerald-600">badge</span>
+                        <span class="material-symbols-rounded text-emerald-600">groups</span>
                         <span class="font-medium">View Instructors</span>
                     </a>
                 </div>
