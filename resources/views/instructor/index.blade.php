@@ -73,23 +73,23 @@
             @foreach($subjects as $subject)
             <div class="bg-white rounded-lg shadow-sm p-6 space-y-4 ring-[0.25px] ring-neutral-400">
                 <div class="flex items-center justify-between">
-                    <h3 class="font-semibold text-lg text-neutral-950/80">{{ $subject->subject_name }}</h3>
-                    <span class="text-sm text-gray-500">{{ $subject->subject_code }}</span>
+                    <h3 class="font-semibold text-lg text-neutral-950/80">{{ $subject['name'] }}</h3>
+                    <span class="text-sm text-gray-500">{{ $subject['code'] }}</span>
                 </div>
 
                 <!-- Attendance Stats -->
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Present Today</span>
-                        <span class="font-semibold text-green-600">{{ $subject->present_count }}</span>
+                        <span class="font-semibold text-green-600">{{ $subject['present_count'] }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Absent Today</span>
-                        <span class="font-semibold text-red-600">{{ $subject->absent_count }}</span>
+                        <span class="font-semibold text-red-600">{{ $subject['absent_count'] }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Total Students</span>
-                        <span class="font-semibold text-blue-600">{{ $subject->total_students }}</span>
+                        <span class="font-semibold text-blue-600">{{ $subject['total_students'] }}</span>
                     </div>
                 </div>
 
@@ -97,11 +97,11 @@
                 <div class="pt-3 border-t border-gray-100">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Male</span>
-                        <span class="font-semibold text-purple-600">{{ $subject->male_count }}</span>
+                        <span class="font-semibold text-purple-600">{{ $subject['male_count'] }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Female</span>
-                        <span class="font-semibold text-purple-600">{{ $subject->female_count }}</span>
+                        <span class="font-semibold text-purple-600">{{ $subject['female_count'] }}</span>
                     </div>
                 </div>
             </div>

@@ -22,60 +22,57 @@ class InstructorController extends Controller
      */
     public function index()
     {
+        $instructor = Instructor::where('email', auth()->user()->email)->first();
+
         // Get overall statistics for all students
         $totalStudents = Student::count();
         $maleCount = Student::where('gender', 'male')->count();
         $femaleCount = Student::where('gender', 'female')->count();
 
         // Get today's present and absent counts for this instructor's subjects only
-        // $presentToday = Attendance::whereHas('subject', function ($query) {
-        //     $query->where('instructor_id', auth()->id());
-        // })
-        //     ->whereDate('attendances.created_at', today())
-        //     ->where('status', 'present')
-        //     ->count();
+        $presentToday = Attendance::where('instructor_id', $instructor->id)
+            ->whereHas('subjectAdvisedbelongs')
+            ->whereDate('attendances.created_at', today())
+            ->where('status', 'present')
+            ->count();
 
-        // $absentToday = Attendance::whereHas('subject', function ($query) {
-        //     $query->where('instructor_id', auth()->id());
-        // })
-        //     ->whereDate('attendances.created_at', today())
-        //     ->where('status', 'absent')
-        //     ->count();
-
-        $presentToday = -1;
-        $absentToday = -1;
+        $absentToday = Attendance::where('instructor_id', $instructor->id)
+            ->whereHas('subjectAdvisedbelongs')
+            ->whereDate('attendances.created_at', today())
+            ->where('status', 'absent')
+            ->count();
 
         // Get subject overview for the logged-in instructor
-        $instructor = auth()->user();
-        // $subjects = Subject::where('instructor_id', $instructor->id)
-        //     ->with(['students'])
-        //     ->get()
-        //     ->map(function ($subject) {
-        //         // Get all student IDs enrolled in this subject
-        //         $studentIds = $subject->students->pluck('id');
+        $subjects = \App\Models\SubjectAdvised::where('instructor_id', $instructor->id)
+            ->with(['subject', 'students'])
+            ->get()
+            ->map(function ($subjectAdvised) {
+                // Get today's attendances for this subject
+                $todayAttendances = Attendance::where('subject_advised_id', $subjectAdvised->id)
+                    ->whereDate('created_at', today())
+                    ->get();
 
-        //         // Get today's attendances for this subject's students and this subject only
-        //         // This ensures we only count attendances for the current subject, not for other subjects the student may be enrolled in
-        //         $todayAttendances = Attendance::whereIn('student_id', $studentIds)
-        //             ->where('subject_id', $subject->id)
-        //             ->whereDate('created_at', today())
-        //             ->get();
+                // Count present and absent for today
+                $presentCount = $todayAttendances->where('status', 'present')->count();
+                $absentCount = $todayAttendances->where('status', 'absent')->count();
 
-        //         // Count present and absent for today in this subject
-        //         $subject->present_count = $todayAttendances->where('status', 'present')->count();
-        //         $subject->absent_count = $todayAttendances->where('status', 'absent')->count();
+                // Get enrolled students
+                $enrolledStudents = $subjectAdvised->students;
+                $totalStudents = $enrolledStudents->count();
+                $maleCount = $enrolledStudents->where('gender', 'male')->count();
+                $femaleCount = $enrolledStudents->where('gender', 'female')->count();
 
-        //         // Total students enrolled in this subject
-        //         $subject->total_students = $subject->students->count();
-
-        //         // Gender breakdown for this subject
-        //         $subject->male_count = $subject->students->where('gender', 'male')->count();
-        //         $subject->female_count = $subject->students->where('gender', 'female')->count();
-
-        //         return $subject;
-        //     });
-
-        $subjects = [ ];
+                return [
+                    'id' => $subjectAdvised->id,
+                    'code' => $subjectAdvised->subject->code,
+                    'name' => $subjectAdvised->subject->name,
+                    'present_count' => $presentCount,
+                    'absent_count' => $absentCount,
+                    'total_students' => $totalStudents,
+                    'male_count' => $maleCount,
+                    'female_count' => $femaleCount,
+                ];
+            });
         
         return view('instructor.index', compact(
             'totalStudents',
