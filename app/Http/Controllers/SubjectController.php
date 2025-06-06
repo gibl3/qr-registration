@@ -164,8 +164,8 @@ class SubjectController extends Controller
         ], 200);
     }
 
-    public function destroyAdvisedSubject(Subject $subject)
-    {
+    public function destroyAdvisedSubject(SubjectAdvised $subject)
+    {        
         $instructor = Instructor::where('email', auth()->user()->email)->first();
         if (!$instructor) {
             return response()->json([
@@ -173,8 +173,14 @@ class SubjectController extends Controller
             ], 401);
         }
 
-        // detach the subject from the instructor
-        $instructor->subjects()->detach($subject->id);
+            // Optional: check if the instructor owns this advised subject
+        if ($subject->instructor_id !== $instructor->id) {
+            return response()->json([
+                'message' => 'Forbidden.',
+            ], 403);
+        }
+        
+        $subject->delete();
 
         return response()->json([
             'message' => 'Advised subject removed successfully.',

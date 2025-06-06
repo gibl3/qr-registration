@@ -350,7 +350,7 @@
                     const formData = new FormData(this);
 
                     fetch(this.action, {
-                            method: 'POST',
+                            method: 'DELETE',
                             body: formData,
                             headers: {
                                 "X-CSRF-TOKEN": document
@@ -363,6 +363,7 @@
                         })
                         .then(response => response.json())
                         .then(data => {
+                            console.log(data)
                             if (data.message) {
                                 alert(data.message);
                                 window.location.reload();
