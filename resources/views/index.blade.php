@@ -40,7 +40,7 @@
                 <ul class="list-disc space-y-1">
                     <li>This portal is officially provided by <span class="font-semibold">Computer Studies Department</span>.</li>
                     <li>Your information is <span class="font-semibold">kept private</span> and used only for attendance purposes.</li>
-                    <li>Need help? Contact <a href="https://youtu.be/dQw4w9WgXcQ?si=zCLFO1MLglNpIz1d" class="text-emerald-700 underline" target="_blank">main.guidance@evsu.edu.ph</a></li>
+                    <li>Need help? Contact <a href="#" class="text-emerald-700 underline" target="_blank">main.guidance@evsu.edu.ph</a></li>
                 </ul>
             </div>
         </section>
